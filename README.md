@@ -1,12 +1,16 @@
 # Conectar Excel con Firebase
 
-## Módulose VBA (.bas)
+## Antes de Empezar
 Antes de empezar es necesario remarcar que para conectar **Firebase** con **EXCEL** se requiere tener creada y configurada una base de datos.
+
+El ejemplo adjunto en este repositorio, crea una carpeta en "Mis Documentos" (Documents) con el nombre de **fbExcel** donde se guardará algún datos que necesite ser descargado (foto de perfil o archivo JSON). Este procedimiento lo uso habitualmente para cuando finalice con las pruebas, poder borrar todos los archivos generados de manera más sencilla. Para cambiar el nombre de esta carpeta, abra el modulo **Herramientas** y cambie el contenido de la variable **NombreCarpetaTrabajo** por el que desee.
+
+## Módulos VBA (.bas)
 
 Este repositorio cuenta con tres módulos necesarios para realizar todas las operaciones de conexión, envío y recepción de datos con **Firebase** usando **EXCEL**.
 - **Módulo Firebase**: Contiene las funciones necesarias para realizar la acciones requeridas.
 - **Módulo JSON**: Contiene las funciones necesarias para leer, escribir y validar archivos JSON (repositorio original https://github.com/omegastripes/VBA-JSON-parser).
-- **Módulo de ProcesosInternos**: Contiene funciones extras que ayudan en algunas operaciones dentro de **EXCEL**.
+- **Módulo de Herramiemtas**: Contiene funciones extras que ayudan en algunas operaciones dentro de **EXCEL**.
 
 ### Módulo Firebase
 Es un módulo escrito a partir de variaciones del Módulo JSON y las indicaciones de la Web de Firebase. Contiene los instrumentos necesarios para realizar el conexionado con la Base de Datos (con o sin autorización, dependerá del tipo de configuración del usuario).
