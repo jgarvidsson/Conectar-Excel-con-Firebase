@@ -6,7 +6,9 @@
 
 
 
-## Antes de Empezar <div id='id1' />
+<div id='id1' />
+
+## Antes de Empezar 
 
 Antes de empezar es necesario remarcar que para conectar **Firebase** con **EXCEL** se requiere tener creada y configurada una base de datos.
 
