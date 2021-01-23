@@ -15,6 +15,7 @@ Antes de empezar es necesario remarcar que para conectar **Firebase** con **EXCE
 El ejemplo adjunto en este repositorio, crea una carpeta en "Mis Documentos" (Documents) con el nombre de **fbExcel** donde se guardará algún datos que necesite ser descargado (foto de perfil o archivo JSON). Este procedimiento lo uso habitualmente para cuando finalice con las pruebas, poder borrar todos los archivos generados de manera más sencilla. Para cambiar el nombre de esta carpeta, abra el modulo **Herramientas** y cambie el contenido de la variable **NombreCarpetaTrabajo** por el que desee.
 
 <div id='id2' />
+
 ## Las Credenciales
 
 Para trabajar con Firebase, además de los datos principales proporcionados por el servidor y que son necesarios para que Firebase reconozca tu aplicación como app con privilegios de Administrador
