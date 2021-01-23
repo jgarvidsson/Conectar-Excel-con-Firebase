@@ -23,18 +23,24 @@
    - - [Modo BACKUP](#id20)
    - - [Modo MOVE](#id21)
    - - [Modo COPY](#id22)
-   - [DevolverValorEspecificoDeFirebase]
-   - [FirebasePC]
-   - [DevolverValorEspecificoDeJSONLocal]
-   - [DevolverValorFirebase]
-   - [GenerarJSONError]
-   - [RegistrarUso]
-   - [ComprobarConexion]
-   - [AlmacenarJSON]
-   - [AccionConUsuario]
-   - [ParametroDB]
-   - [arrayLength]
-   - [CheckJSON]
+   - [DevolverValorEspecificoDeFirebase](#id23)
+   - [DevolverValorAutorizacion](#id24)
+   - [FirebasePC](#id25)
+   - [DevolverValorEspecificoDeJSONLocal](#id26)
+   - [Funciones de Registro](#id27)
+   - - [GenerarJSONError](#id28)
+   - - [RegistrarUso](#id29)
+   - - [AlmacenarJSON](#id30)
+   - [AccionConUsuario](#id31)
+   - - [NEW](#id32)
+   - - [ANONIMUS](#id33)
+   - - [INFO](#id34)
+   - - [UPDATE](#id35)
+   - - [AUTH](#id36)
+   - - [REMOVE](#id37)
+   - [ComprobarConexion](#id38)
+6. [ERRORES]
+   - [Lista de Errores Comunes]
 
 
 
@@ -264,32 +270,6 @@ El botón *POST* del ejemplo adjunto en este repositorio, sería:
 
       End Sub
 
-<div id='id16' />
-      
-- Con **PUT** enviaremos los datos y se localizarán en la dirección indicada. Si se vuelve a enviar otra carga útil con la misma dirección borrará el registro anterior sustituyendo los valores diferentes y eliminando los que ya no están incluidos. 
-
-El botón *PUT* del ejemplo adjunto en este repositorio, sería:
-
-      Private Sub dbPut_Click()
-          Dim Direccion As String
-          Dim Mensaje As String
-          Dim Respuesta As Variant
-
-          Direccion = Caminofb.Text            ' Se transfiere el dato del textbox con la dirección seleccionada a la variable dirección.
-
-      ''' Creamos la carga util con el mensaje o datos que queremos enviar
-          Mensaje = "{" & _
-          """Domain"":""" & Environ("Userdomain") & """," & _
-          """Workbook"":""" & ThisWorkbook.Name & """," & _
-          """" & Valor & """:""" & Contenido & """," & _
-          """TSL"":""" & Format(Now(), "yyyy-MM-dd hh:mm:ss") & """," & _
-          """TSS"":{"".sv"":""timestamp""}" & _
-          "}"
-
-          Respuesta = FirebaseDB("PUT", Direccion, Mensaje, TokenAutorizacion)
-          
-      End Sub
-
 
 <div id='id15' />
       
@@ -318,9 +298,38 @@ El botón *PATCH* del ejemplo adjunto en este repositorio, sería:
       End Sub
 
 
+<div id='id16' />
+      
+- Con **PUT** enviaremos los datos y se localizarán en la dirección indicada. Si se vuelve a enviar otra carga útil con la misma dirección borrará el registro anterior sustituyendo los valores diferentes y eliminando los que ya no están incluidos. 
+
+El botón *PUT* del ejemplo adjunto en este repositorio, sería:
+
+      Private Sub dbPut_Click()
+          Dim Direccion As String
+          Dim Mensaje As String
+          Dim Respuesta As Variant
+
+          Direccion = Caminofb.Text            ' Se transfiere el dato del textbox con la dirección seleccionada a la variable dirección.
+
+      ''' Creamos la carga util con el mensaje o datos que queremos enviar
+          Mensaje = "{" & _
+          """Domain"":""" & Environ("Userdomain") & """," & _
+          """Workbook"":""" & ThisWorkbook.Name & """," & _
+          """" & Valor & """:""" & Contenido & """," & _
+          """TSL"":""" & Format(Now(), "yyyy-MM-dd hh:mm:ss") & """," & _
+          """TSS"":{"".sv"":""timestamp""}" & _
+          "}"
+
+          Respuesta = FirebaseDB("PUT", Direccion, Mensaje, TokenAutorizacion)
+          
+      End Sub
+
 #### Modos de Recepción
 Para recibir los datos desde Firebase se debe requerir directamente la dirección que contiene la información o el árbol de datos, recibiendo el dato contenido o los datos (valores y contenidos) respectivamente.
 
+
+<div id='id17' />
+      
 - El modo de recepción oficial es **GET**.
 
 
@@ -369,9 +378,29 @@ Para recibir los datos desde Firebase se debe requerir directamente la direcció
 		End Sub
 
 Como respuestas tendremos que:
-  - Si el **Usuario** no tiene permisos recibirá un Valor=Disconnected.
+  - Si el **Usuario** no tiene permisos recibirá un Valor = Disconnected.
   - Si la *dirección* de origen no existe recibirá un Valor = null.
   - Si todo va bien recibirá un Array con el contenido. 
+
+
+<div id='id18' />
+
+Se puede eliminar un valor y su contenido directamente o un árbol completo de datos usando el modo **DELETE**.
+
+- El botón *BORRAR* del ejemplo adjunto en este repositorio, sería:
+
+      Private Sub BorrarPath_Click()
+          Dim Direccion As String
+          Dim Mensaje As String
+          Dim Respuesta As Variant
+
+          Direccion = Caminofb.Text            ' Se transfiere el dato del textbox con la dirección seleccionada a la variable dirección.
+
+          Respuesta = FirebaseDB("DELETE", Direccion, Mensaje, TokenAutorizacion)
+      End Sub
+  
+
+<div id='id19' />
 
 - El modo personalizado **DOWNLOAD**, permite descargar en formato JSON la información contenida sobre un valor o árbol de datos de *Firebase*.
 
@@ -390,23 +419,9 @@ El botón *DOWNLOAD* del ejemplo adjunto en este repositorio, sería:
           Respuesta = FirebaseDB("DOWNLOAD", Direccion, ArchivoPC, TokenAutorizacion)
       End Sub
 
-#### Modo de borrado
-Se puede eliminar un valor y su contenido directamente o un árbol completo de datos usando el modo **DELETE**.
 
-- El botón *BORRAR* del ejemplo adjunto en este repositorio, sería:
 
-      Private Sub BorrarPath_Click()
-          Dim Direccion As String
-          Dim Mensaje As String
-          Dim Respuesta As Variant
-
-          Direccion = Caminofb.Text            ' Se transfiere el dato del textbox con la dirección seleccionada a la variable dirección.
-
-          Respuesta = FirebaseDB("DELETE", Direccion, Mensaje, TokenAutorizacion)
-      End Sub
-
-#### Otros modos de trabajo (personalizados)
-Para realizar distintas tareas dentro del árbol de datos de *Firebase* tuve que ampliar la función de trabajo **FirebaseDB** añadiéndole otros modos para aumentar su funcionalidad.
+<div id='id20' />
 
 El modo personalizado **BACKUP** permite realizar una copia de un dato o árbol de datos a otra parte de la base de datos usando el modo **POST** de manera que se guarda una copia de seguidad de los cambios realizados en caso de querer volver a revisarlos más tarde.
 
@@ -424,6 +439,9 @@ El modo personalizado **BACKUP** permite realizar una copia de un dato o árbol 
 
       End Sub
 
+
+<div id='id21' />
+   
 - El modo personalizado **MOVE** permite mover un dato o árbol de datos a otra parte de la base de datos.
 
 El botón *MOVER* del ejemplo adjunto en este repositorio, sería:
@@ -439,7 +457,10 @@ El botón *MOVER* del ejemplo adjunto en este repositorio, sería:
           Respuesta = FirebaseDB("MOVE", Direccion, CopiarDB, TokenAutorizacion)
 
       End Sub
-      
+
+
+<div id='id22' />
+         
 - El modo personalizado **COPY** permite mover un dato o árbol de datos a otra parte de la base de datos duplicando dicha información.
 
 El botón *COPIAR* del ejemplo adjunto en este repositorio, sería:
@@ -456,17 +477,84 @@ El botón *COPIAR* del ejemplo adjunto en este repositorio, sería:
 
       End Sub
 
+
+<div id='id23' 
+
+## Otras funciones
+
+Hay funciones que trabajan de manera concreta como **DevolverValorEspecificoDeFirebase**:
+
+		Function DevolverValorEspecificoDeFirebase(Direccion As String, Valor As String, Optional claveautorizacion As String = "") As String
+
+Nos devuelve el contenido de un **Valor** especificado en el campo *Valor* en una *Direccion* de la *Base De Datos* sin tener que manejar JSON por parte del **Usuario**. Esta función se puede descartar y usar FirebaseDB en modo **GET**, pero la diferencié así por comodidad en algunos casos específicos.
+
+<div id='id24' 
+
+Otra función de las mismas características que la anterior, pero que trabaja sobre los datos del **Usuario** y no de la Base de Datos es **DevolverValorAutorizacion**:
+
+		Function DevolverValorAutorizacion(Valor As String, IDUsereMail As String, IDUserPassword As String) As String
+
+
+Nos retorna un valor específico de la cadena devuelta por el servidor cuando se le consulta por los datos del **Usuario**. Se usa para adquirir el IdToken de **Usuario** para poder trabajar con la base de datos.
+
+
+<div id='id25' 
+
+## FirebasePC
+Función que permite trabajar con los archivos JSON descargados de la Base de Datos. En este contexto no se ha usado, ya que está más centrado en el proceso de datos de **Realtime Database**. :point_right: **Esta función no está desarrollada completamente aún** :point_left:.
+
+		Function FirebasePC(Mode As String, Direccion As String, Mensaje As String, Optional SoloContenidoIndice As Boolean = False) As Variant
+
+La estructura es similar a la ***Función FirebaseDB***, pero los datos se maneja off-line.
+Sólo funciona con un modo: **GET** que nos permite abrir un archivo JSON local y chequearlo para poder extraer información.
+
+
+<div id='id26' 
+
+## DevolverValorEspecificoDeJSONLocal
+Trabaja en conjunción cno FirebasePC y permite extraer el contenido de un valor indicado.
+
+		Function DevolverValorEspecificoDeJSONLocal(DirectorioYArchivo As String, Valor As String) As String
+
+
+<div id='id27' 
+
 ## Funciones de Registro
-Las funciones de registro son comandos que procesan ciertos datos y los envía al servidor. Estas funciones son:
-- **RegistrarUso**: Registra una cadena JSON con datos específicos en modo ***POST***. De esta manera se puede llevar un control del uso de una aplicación.
+Las funciones de registro son funciones que procesan ciertos datos y los envía al servidor sin esperar respuestas, suele usarme para generara 'Logs' de Uso o Registrar Errores que puedan aparecer en el programa. Estas funciones son:
+
+<div id='id28' 
+
 - **GenerarJSONError**: Registra los errores que puedan aparecer en la aplicación en modo ***POST***. Si por cuaquier motivo aparece un error de conexión, la cadena JSON que contiene el error se guarda en una carpeta especificada. Se puede crear una Función que intente enviar el contenido de archivos generados en otro momento (no incluido en este repositorio).
 
-## FUNCIONES DE USUARIO
+		Function GenerarJSONError(NumeroError, descripcionerror, Mensaje) As Variant
+
+Un ejemplo de uso: Cuando se intenta abrir un documento y este no existe se reedirigen los datos del error usando 'on error' y se capturan los valores del error a través de err.number y err.description. La variable *Mensaje* suelo dejarla para textos personalizados.
+
+<div id='id29' 
+
+- **RegistrarUso**: Registra una cadena JSON con datos específicos en modo ***POST***. De esta manera se puede llevar un control del uso de una aplicación.
+
+		Function RegistrarUso(Optional qModulo As String = "", Optional ElToken As String = "")
+
+Un ejemplo de uso: Lo pongo en 'Thisworkbook' para que se registre cada vez que se abra el archivo y en algunos Formularios para registar cuales se usan más. La variable *qModulo* contendría el nombre del Formulario y *ELToken* el IdToken por si donde se va a registrar está protegido con *Reglas de Seguridad*.
+
+<div id='id30'
+
+- **AlmacenarJSON** es una pequeña Función que recoge una cadena de texto la guarda en el computador. 
+
+ 		Function AlmacenarJSON(RutaYArchivo As String, Contenido As String)
+
+Para este contexto se usa para guardar cadenas con estructura JSON en una ruta indicada.
+
+
+<div id='id31'
+
+## AccionConUsuario
 Para trabajar con usuarios usaremos la siguiente funcion:
 
-Function AccionConUsuario(Accion As String, IDUsereMail As String, IDUserPassword As String, _
-                            Optional IDTokenUser As String = "", Optional IDNameUser As String = "", _
-                            Optional IDURLFoto As String = "") As Variant
+		Function AccionConUsuario(Accion As String, IDUsereMail As String, IDUserPassword As String, _
+		                            Optional IDTokenUser As String = "", Optional IDNameUser As String = "", _
+		                            Optional IDURLFoto As String = "") As Variant
 
   - **Accion**: Se indicará que acción se llevará a cabo por el usuario. Para más información, ver la lista de acciones más abajo (Valor Obligatorio).
   - **IDUsereMail**: Se indicará el correo electronico del **Usuario** (Valor Obligatorio).
@@ -477,21 +565,39 @@ Function AccionConUsuario(Accion As String, IDUsereMail As String, IDUserPasswor
 
 ### Acciones de Usuario
 Para indicar qué acción se llevará a cabo, se indicará la palabra clave correspondiente:
+
+<div id='id32'
+
   - **NEW**: Creará un nuevo usuario a través del *Correo Electrónico* y una *clave de acceso*.
 
   		AccionConUsuario("NEW", eMail, Password)
+
+<div id='id33'
+ 		
   - **ANONIMUS**: Permite crear un Usuario Anonimo con las mismas características de un Usuario Registrado. El IdToken generado cadurá pasada una hora. Se puede actualizar de ***ANONIMUS*** a ***Usuario Registrado*** usando el **IdToken** generado para el primero y actualizando los datos con la **Accion UPDATE**.
 
   		AccionConUsuario("ANONIMUS", "", "")
+
+<div id='id34'
+
   - **INFO**: Recupera los datos del Usuario cuyo IdToken esté activo.
 
   		AccionConUsuario("INFO", eMail, Password)
+
+<div id='id35'
+
   - **UPDATE**: Actualiza la información de un Usuario excepto la dirección de Correo Electrónico. Si actualiza también refresca el IdToken, pero tiene que ser antes de que caduque (tienen una vida de 3600 segundos).
 
   		AccionConUsuario("UPDATE", eMail, Password, IdToken, Nombre, URLfoto)
+
+<div id='id36'
+
   - **AUTH**: Recupera el IdToken de un **Usuario Registrado**.
 
   		AccionConUsuario("AUTH", eMail, Password)
+
+<div id='id37'
+
   - **REMOVE**: Borra el registro de un **Usuario**.
 
 		AccionConUsuario("REMOVE", eMail, Password)
@@ -526,6 +632,14 @@ La función **AccionConUsuario** devuelve una matriz con los datos extraidos y p
     		If nRespuesta > 0 Then Erase Respuesta
 		End Sub
 
+<div id='id38'
+
+## ComprobarConexion
+Con esta función nos conectamos a la base de datos y requerimos un valor específico. Si está conectado o no.
+
+		Function ComprobarConexion() As Boolean
+
+En el apartado Reglas de Seguridad de este archivo se explica como se deja en Modo sólo lectura un directorio que contiene un valor que es el que revisa esta función.
 
 ## ERRORES
 Cuando enviamos información al servidor para realizar una petición, en respuesta se recibe un código, este código puede significar que la petición fue aceptada o presentó un error:
