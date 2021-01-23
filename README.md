@@ -5,6 +5,54 @@ Antes de empezar es necesario remarcar que para conectar **Firebase** con **EXCE
 
 El ejemplo adjunto en este repositorio, crea una carpeta en "Mis Documentos" (Documents) con el nombre de **fbExcel** donde se guardará algún datos que necesite ser descargado (foto de perfil o archivo JSON). Este procedimiento lo uso habitualmente para cuando finalice con las pruebas, poder borrar todos los archivos generados de manera más sencilla. Para cambiar el nombre de esta carpeta, abra el modulo **Herramientas** y cambie el contenido de la variable **NombreCarpetaTrabajo** por el que desee.
 
+## Las Credenciales
+Para trabajar con Firebase, además de los datos principales proporcionados por el servidor y que son necesarios para que Firebase reconozca tu aplicación como app con privilegios de Administrador
+
+### Credenciales del Servidor
+Se precisa la siguiente información por parte del servidor:
+
+		Private Const dbNAME As String = "<nombre de la base de datos>"                             ' Nombre de la base de datos (sin cabecera http ni servidor).
+		'Private Const dbURL As String = "https://" & dbNAME & ".firebaseio.com/"                   ' Direccion de la base de datos.    ' Servidor en USA
+		Private Const dbURL As String = "https://" & dbNAME & ".europe-west1.firebasedatabase.app/" ' Direccion de la base de datos.    ' Servidor en Europa
+		Private Const dbAPI As String = "<API>"                   									' API de la base de datos
+
+El servidor puede estar localizado en USA o EU, y es posible que aparezcan otras posibilidades en el futuro. Confirmad antes cual es la dirección donde almacenareis vuestra BD (lo selecionais en la configuración) y dejar habilitada una de las dos **dbURL**
+
+#### Las Reglas de Seguridad de Firebase
+Es muy importante recordar que, dependiendo de las reglas de Uso configuradas para su base de datos, el registro o visualización de datos requerirá de credenciales específicas. Esta **Reglas** se configuran en la *consola de Firebase*, en el menú *Reglas* dentro de *RealTime Database*.
+
+Sin configuramos las Reglas de las siguiente manera.
+
+		{
+		  "rules": {
+		    ".read": true, 
+		    ".write": true,  
+		  }
+		}
+
+Cualquiera que tenga las Credenciales del Servidor (API y dirección del Servidor), podrá acceder a los datos.
+
+En cambio, si tenemos en cuenta nuestras necesidades podremos configurar dichas reglas de tal menera que sólo podamos acceder a los datos registrados cuando estemos 'logeados' como **Usuario** de la base de datos.
+
+		{
+			"rules": {
+		     "Conexion": {".write": "auth != null",".read": true},
+		     "Test":     {".write": "auth != null",".read": "auth != null"}
+								}
+		}
+
+Iniciamos la regla con 'rules' para que el servidor sepa qué estamos configurando. Como ejemplo de este repositorio se ha creado dos directorios dentro de la base de datos: 'Conexion' y 'Test'.
+
+  - 'Conexion' sólo contendrá un valor con un contenido booleano y lo usaremos para comprobar que nuestra aplicación tiene acceso a la base de datos.
+  - 'Test' contendrá todas los registros de datos realizados en el ejemplo.
+
+ Si quereis probar con otros nombres o añadir más no habrá problemas siempre y cuando respeteis las **Reglas** de seguridad configuradas.
+
+### Credenciales del Usuario
+Las credenciales del **Usuario** son un Correo Electrónico y un Password. Estos datos los suministra el Administrador o puede activarse desde un Formulario creado en EXCEL a través de una de las Funciones que podreis ver más adelante. En el  archivo de ***Test*** contenido en este repositorio, las credenciales pueden integrarse en el programa a través de variables privadas o introducirse a través de *cajas de texto*.
+
+En mis proyectos EXCEL<->FireBase uso un archivo encriptado que contiene la información del Servidor y del Usuario. El Usuario final no necesita conocer esta información porque no va a usarla con fines personales, sólo es una llave de acceso a una información contenida en el servidor y que será como intercambiador de datos y centralización de información. Yo les paso el archivo Excel y un 'permit' y pueden trabajar sin problemas.
+
 ## Módulos VBA (.bas)
 
 Este repositorio cuenta con tres módulos necesarios para realizar todas las operaciones de conexión, envío y recepción de datos con **Firebase** usando **EXCEL**.
@@ -178,25 +226,55 @@ Para recibir los datos desde Firebase se debe requerir directamente la direcció
 
 - El modo de recepción oficial es **GET**.
 
-      Private Sub recibirDB_Click()
-          Dim Direccion As String
-          Dim Mensaje As String
-          Dim Respuesta As Variant
-          Dim nRespuesta As Single
-          Dim i As Single
 
-          Direccion = Caminofb.Text       ' Se transfiere el dato del textbox con la dirección seleccionada a la variable dirección.
+		Private Sub recibirDB_Click()
+		    Dim Direccion As String
+		    Dim Mensaje As String
+		    Dim Respuesta As Variant
+		    Dim nRespuesta As Single
+		    Dim ValorConexion As String
+		    Dim i As Single
+		        
+		    BorrarCampos                    ' Borrar los campos TextBox de la acción Recibir (es sólo por limpiar la ventana)
+		    
+		    Direccion = Caminofb.Text       ' Se transfiere el dato del textbox con la dirección seleccionada a la variable dirección.
+		    RespuestaServ2 = "Procensando"
+		    DoEvents
 
-          Respuesta = FirebaseDB("GET", Direccion, Mensaje, TokenAutorizacion)
-          nRespuesta = arrayLength(Respuesta)
-          If nRespuesta = 0 Then Exit Sub
 
-          For i = 0 To nRespuesta - 1
-              If Respuesta(i, 0) = Valor2 Then Contenido2.Text = Respuesta(i, 1)
-              If Respuesta(i, 0) = "TSL" Then TimeLocal.Text = Respuesta(i, 1)
-              If Respuesta(i, 0) = "TSS" Then TimeServer.Text = Respuesta(i, 1)
-          Next i
-      End Sub
+		''' Enviamos la petición. Se le ha asignado una variable para soportar la carga de devolución de la base de datos,
+		'   con esta información podemos controlar los datos devueltos por el servidor.
+		    Respuesta = FirebaseDB("GET", Direccion, Mensaje, TokenAutorizacion)
+		    nRespuesta = arrayLength(Respuesta)
+		    If nRespuesta = 0 Then Exit Sub
+		    
+		    On Error Resume Next
+		    For i = 0 To nRespuesta - 1
+		        If Respuesta(i, 0) = Valor2 Then Contenido2.Text = Respuesta(i, 1)
+		        If Respuesta(i, 0) = "TSL" Then TimeLocal.Text = Respuesta(i, 1)
+		        If Respuesta(i, 0) = "TSS" Then TimeServer.Text = Respuesta(i, 1)
+		        If Respuesta(i) = "Disconnected" Then ValorConexion = Respuesta(i)
+		        If Respuesta(i) = "null" Then ValorConexion = Respuesta(i)
+		    Next i
+
+		''' Dependiendo de la recepción, podremos definir si todo salió bien, o hubo un problema
+		    If ValorConexion = "Disconnected" Then
+		        RespuestaServ2 = "No Tiene Permiso"
+		    ElseIf ValorConexion = "null" Then
+		        RespuestaServ2 = "No hay datos para descargar"
+		    Else
+		        RespuestaServ2 = "Datos Recibidos"
+		    End If
+		fin:
+		    If nRespuesta > 0 Then Erase Respuesta
+		    On Error GoTo 0
+		    
+		End Sub
+
+Como respuestas tendremos que:
+  - Si el **Usuario** no tiene permisos recibirá un Valor=Disconnected.
+  - Si la *dirección* de origen no existe recibirá un Valor = null.
+  - Si todo va bien recibirá un Array con el contenido. 
 
 - El modo personalizado **DOWNLOAD**, permite descargar en formato JSON la información contenida sobre un valor o árbol de datos de *Firebase*.
 
@@ -286,3 +364,80 @@ Las funciones de registro son comandos que procesan ciertos datos y los envía a
 - **RegistrarUso**: Registra una cadena JSON con datos específicos en modo ***POST***. De esta manera se puede llevar un control del uso de una aplicación.
 - **GenerarJSONError**: Registra los errores que puedan aparecer en la aplicación en modo ***POST***. Si por cuaquier motivo aparece un error de conexión, la cadena JSON que contiene el error se guarda en una carpeta especificada. Se puede crear una Función que intente enviar el contenido de archivos generados en otro momento (no incluido en este repositorio).
 
+## FUNCIONES DE USUARIO
+Para trabajar con usuarios usaremos la siguiente funcion:
+
+Function AccionConUsuario(Accion As String, IDUsereMail As String, IDUserPassword As String, _
+                            Optional IDTokenUser As String = "", Optional IDNameUser As String = "", _
+                            Optional IDURLFoto As String = "") As Variant
+
+  - **Accion**: Se indicará que acción se llevará a cabo por el usuario. Para más información, ver la lista de acciones más abajo (Valor Obligatorio).
+  - **IDUsereMail**: Se indicará el correo electronico del **Usuario** (Valor Obligatorio).
+  - **IDUserPassword**: Se indicará el password de la sesión de **Usuario** (Valor Obligatorio).
+  - **IDTokenUser**: Se suministrará el IdToken cuando se realice alguna acción sobre la información del **Usuario** (Valor opcional).
+  - **IDNameUser**: Se indicará el Nombre de **Usuario** que será mostrado por el servidor (Valor opcional).
+  - **IDURLFoto**: Se indicará la dirección Web de la foto de perfil del **Usuario** (Valor opcional).
+
+### Acciones de Usuario
+Para indicar qué acción se llevará a cabo, se indicará la palabra clave correspondiente:
+  - **NEW**: Creará un nuevo usuario a través del *Correo Electrónico* y una *clave de acceso*.
+
+  		AccionConUsuario("NEW", eMail, Password)
+  - **ANONIMUS**: Permite crear un Usuario Anonimo con las mismas características de un Usuario Registrado. El IdToken generado cadurá pasada una hora. Se puede actualizar de ***ANONIMUS*** a ***Usuario Registrado*** usando el **IdToken** generado para el primero y actualizando los datos con la **Accion UPDATE**.
+
+  		AccionConUsuario("ANONIMUS", "", "")
+  - **INFO**: Recupera los datos del Usuario cuyo IdToken esté activo.
+
+  		AccionConUsuario("INFO", eMail, Password)
+  - **UPDATE**: Actualiza la información de un Usuario excepto la dirección de Correo Electrónico. Si actualiza también refresca el IdToken, pero tiene que ser antes de que caduque (tienen una vida de 3600 segundos).
+
+  		AccionConUsuario("UPDATE", eMail, Password, IdToken, Nombre, URLfoto)
+  - **AUTH**: Recupera el IdToken de un **Usuario Registrado**.
+
+  		AccionConUsuario("AUTH", eMail, Password)
+  - **REMOVE**: Borra el registro de un **Usuario**.
+
+		AccionConUsuario("REMOVE", eMail, Password)
+
+La función **AccionConUsuario** devuelve una matriz con los datos extraidos y pueden ser tomados usando un bucle ***For...Next simple***. En el siguiente ejemplo se muestra la acción de Crear Nuevo Usuario del archivo de Test incluido en este repositorio.
+
+
+		Private Sub CrearUsuarioNuevo_Click()
+		''' Declaramos las variables
+		    Dim Respuesta As Variant
+		    Dim nRespuesta As Single
+		    Dim i As Single
+		        
+		''' Enviamos el requerimiento al servidor y chequeamos el contenido de la respuesta
+		    Respuesta = AccionConUsuario("NEW", nuevoMail, nuevoPass, "", nuevoNombre, nuevoFoto)
+		    nRespuesta = arrayLength(Respuesta)
+		    If nRespuesta = 0 Then Exit Sub
+		    
+		''' Si hay datos de respuesta, desplegamos la matriz visualmente
+		    For i = 0 To nRespuesta - 1
+		        If Respuesta(i, 0) = "kind" Then kind = Respuesta(i, 1)
+		        If Respuesta(i, 0) = "email" Then email = Respuesta(i, 1)
+		        If Respuesta(i, 0) = "error" Then sCodigo = Extraer(Respuesta(i, 1), False)
+		        If Respuesta(i, 0) = "message" Then sMensaje = Respuesta(i, 1)
+		        If Respuesta(i, 0) = "reason" Then sEstatus = Respuesta(i, 1)
+		        If Respuesta(i, 0) = "idToken" Then _
+		            sCodigo = "200": TokenAutorizacion = Respuesta(i, 1): _
+		            Me.Caption = "Comunicación con FireBase - (ID Token para " & nuevoMail & ") -"
+		        If Respuesta(i, 0) = "registered" Then sEstatus = Respuesta(i, 1)
+		        If Respuesta(i, 0) = "kind" Then sMensaje = "USER CREATED!!!"
+		    Next i
+    		If nRespuesta > 0 Then Erase Respuesta
+		End Sub
+
+
+## ERRORES
+Cuando enviamos información al servidor para realizar una petición, en respuesta se recibe un código, este código puede significar que la petición fue aceptada o presentó un error:
+  - **200**: Petición aceptada.
+  - **400**: El servidor no ha podido procesar la petición porque hay un error.
+
+ | Error | Descripción | Acción |
+ | :---: | --- | --- |
+ | **EMAIL_NOT_FOUND** | El eMail introducido por el usuario no está registrado. | Comprueba la sintaxis de los datos introducidos o ponte en contacto con el **Administrador** para registrar tu **Usuario**. |
+ | **INVALID_PASSWORD** | El password correspondiente al eMail introducido no es correcto | Compruebe la sintaxis de los datos introducidos o realice una petición de recuperación al Administrador. |
+ | **INVALID_ID_TOKEN** | Está intentando realizar una acción sin estar identificado o con un IdToken diferente al **Usuario** indicado. | Inicie sesión con sus credenciales para realizar la acción deseada. |
+ | **CREDENTIAL_TOO_OLD_LOGIN_AGAIN** | Ha intentado realizar alguna acción en el servidor con una credencial caducada. | Vuelva a conextarse para actualizar el IdToken de **Usuario**. |
