@@ -13,8 +13,16 @@
    - [IdToken](#id10)
    - [Carga Util (Payload)](#id11)
 5. [Funciones ](#id12)
-   - [FirebaseDB](#id12)
-   > - [FirebaseDB](#id12)
+   - [FirebaseDB](#id13)
+   - - [Modo POST](#id14)
+   - - [Modo PATCH](#id15)
+   - - [Modo PUT](#id16)
+   - - [Modo GET](#id17)
+   - - [Modo DELETE](#id18)
+   - - [Modo DOWNLOAD](#id19)
+   - - [Modo BACKUP](#id20)
+   - - [Modo MOVE](#id21)
+   - - [Modo COPY](#id22)
    - [DevolverValorEspecificoDeFirebase]
    - [FirebasePC]
    - [DevolverValorEspecificoDeJSONLocal]
@@ -27,21 +35,21 @@
    - [ParametroDB]
    - [arrayLength]
    - [CheckJSON]
-   
-<div id='id12' />
 
-## Antes de Empezar 
+
+
+<div id='id1' />
 
 Antes de empezar es necesario remarcar que para conectar **Firebase** con **EXCEL** se requiere tener creada y configurada una base de datos.
 
-El ejemplo adjunto en este repositorio, crea una carpeta en "Mis Documentos" (Documents) con el nombre de **fbExcel** donde se guardará algún datos que necesite ser descargado (foto de perfil o archivo JSON). Este procedimiento lo uso habitualmente para cuando finalice con las pruebas, poder borrar todos los archivos generados de manera más sencilla. Para cambiar el nombre de esta carpeta, abra el modulo **Herramientas** y cambie el contenido de la variable **NombreCarpetaTrabajo** por el que desee.
+El ejemplo adjunto en este repositorio, crea una carpeta en "Mis Documentos" (Documents) con el nombre de **fbExcel** donde se guardarán datos que necesiten ser descargado (foto de perfil o archivo JSON). Este procedimiento lo uso habitualmente para cuando al finalizar con las pruebas, poder borrar todos los archivos generados de manera más sencilla. Para cambiar el nombre de esta carpeta, abra el modulo **Herramientas** y cambie el contenido de la variable **NombreCarpetaTrabajo** localizado en la cabecera por el que desee.
+
+		Private Const NombreCarpetaTrabajo As String = "fbExcel"
 
 <div id='id2' />
 
 ## Las Credenciales
-
-Para trabajar con Firebase, además de los datos principales proporcionados por el servidor y que son necesarios para que Firebase reconozca tu aplicación como app con privilegios de Administrador
-
+Para trabajar con Firebase, se requieren credenciales de conexión proporcionadas por el **Servidor** para permitir la comunicación y las credenciales de **Usuario** para poder trabajar con los datos.
 
 <div id='id3' />
 
@@ -49,7 +57,7 @@ Para trabajar con Firebase, además de los datos principales proporcionados por 
 Se precisa la siguiente información por parte del servidor:
 
 		Private Const dbNAME As String = "<nombre de la base de datos>"                             ' Nombre de la base de datos (sin cabecera http ni servidor).
-		'Private Const dbURL As String = "https://" & dbNAME & ".firebaseio.com/"                   ' Direccion de la base de datos.    ' Servidor en USA
+	   'Private Const dbURL As String = "https://" & dbNAME & ".firebaseio.com/"                    ' Direccion de la base de datos.    ' Servidor en USA
 		Private Const dbURL As String = "https://" & dbNAME & ".europe-west1.firebasedatabase.app/" ' Direccion de la base de datos.    ' Servidor en Europa
 		Private Const dbAPI As String = "<API>"                   									' API de la base de datos
 
@@ -95,19 +103,46 @@ Iniciamos la regla con 'rules' para que el servidor sepa qué estamos configuran
 
  Si quereis probar con otros nombres o añadir más no habrá problemas siempre y cuando respeteis las **Reglas** de seguridad configuradas.
 
-## Módulos VBA (.bas)
 
-Este repositorio cuenta con tres módulos necesarios para realizar todas las operaciones de conexión, envío y recepción de datos con **Firebase** usando **EXCEL**.
+<div id='id6' />
+
+## Los Archivos Adjuntos
+
+<div id='id7' />
+
+### Módulos VBA (.bas)
+
+Este repositorio cuenta con tres módulos necesarios para realizar todas las operaciones de conexión, envío y recepción de datos con **Firebase** usando **EXCEL** y un ejemplo complementado en un archivo de **EXCEL** con todas las funciones explicadas aquí.
+
 - **Módulo Firebase**: Contiene las funciones necesarias para realizar la acciones requeridas.
 - **Módulo JSON**: Contiene las funciones necesarias para leer, escribir y validar archivos JSON (repositorio original https://github.com/omegastripes/VBA-JSON-parser).
 - **Módulo de Herramiemtas**: Contiene funciones extras que ayudan en algunas operaciones dentro de **EXCEL**.
 
+
+<div id='id8' />
+
+### Archivo EXCEL (.xlsm)
+- Archivo EXCEL **Conectar con Firebase.xlsm**: Complementa todas las funciones explicadas y desarrolladas para un mejor entendimiento.
+
+
+<div id='id9' />
+
 ### Módulo Firebase
 Es un módulo escrito a partir de variaciones del Módulo JSON y las indicaciones de la Web de Firebase. Contiene los instrumentos necesarios para realizar el conexionado con la Base de Datos (con o sin autorización, dependerá del tipo de configuración del usuario).
 
-Cuando se cree un Formulario de VBA en EXCEL hay que recordar que el primer paso es requerir la autorización de conexión a Firebase, par ello se debe comenzar el módulo con la variable privada que contendrá dicha autorización, al menos, en el formulario principal:
 
-      Activate TokenAutorizacion As String
+<div id='id9' />
+
+## Conexión con Firebase]
+
+
+<div id='id10' />
+
+### IdToken
+
+Cuando se crea un Formulario de VBA en EXCEL hay que recordar que el primer paso es requerir el código de autorización del **USUARIO**, el llamado **IdToken**, para ello se debe comenzar el módulo con la variable privada que contendrá dicho código:
+
+      Private TokenAutorizacion As String
 
 A continuación, deberá decidir si el Token se requerirá automáticamente o manual.
 
@@ -138,6 +173,8 @@ A continuación, deberá decidir si el Token se requerirá automáticamente o ma
           End If
       End Sub
 
+Se ha añadido
+
 Además de **DevolverValorFirebase** que especifica el contenido de un valor "idToken" para extraer el ***Token***, se puede usar la siguiente función:
 
       Function RecibirAutorizacion(IDUsereMail As String, IDUserPassword As String) As Variant
@@ -145,11 +182,13 @@ Además de **DevolverValorFirebase** que especifica el contenido de un valor "id
 Devuelve un array (matriz) con el contenido de la respuesta del servidor. Con esta función se pueden obtener los detalles de un error y el mensaje devuelto.
 
 
-#### Enviar información a la base de datos
-##### Carga Útil (o PayLoad)
-Hay que tener mucho cuidado a la hora de generar las cadenas con los datos en formato JSON. Es un error muy normal no acertar en la composición de una cadena completa, hay que tener especial ojo en las características que tiene, ya que estos errores provocan el rechazo por parte del servidor, por lo que puede marearnos un poco.
+<div id='id11' />
 
-Estructura JSON:
+### Carga Util (Payload)
+
+Hay que tener mucho cuidado a la hora de generar las cadenas con los datos en formato JSON. Es un error muy normal no acertar en la composición de una cadena completa, hay que tener especial ojo en las características que tiene (https://es.wikipedia.org/wiki/JSON), ya que estos errores provocan el rechazo por parte del servidor, por lo que puede marearnos un poco.
+
+Estructura JSON usada en este repositorio:
 
       Mensaje = "{" & _
       """Domain"":""" & Environ("Userdomain") & """," & _
@@ -159,7 +198,15 @@ Estructura JSON:
       """TSS"":{"".sv"":""timestamp""}" & _
       "}"
 
-#### Función para trabajar con Firebase Realtime
+
+<div id='id12' />
+
+## Funciones
+
+<div id='id13' />
+
+### FirebaseDB
+
 La Función principal para trabajar con la base de datos de *Fiebase* es **FirebaseDB**. Esta función, y dependiendo del modo de trabajo requerido, permite trabajar con la base de datos en modo online realizando varias tareas especícicas.
 
     Function FirebaseDB(Mode As String, Direccion As String, Mensaje As String, Optional claveautorizacion As String = "", Optional SoloContenidoIndice As Boolean = False) As Variant
@@ -170,7 +217,7 @@ La Función principal para trabajar con la base de datos de *Fiebase* es **Fireb
 -  **claveautorizacion** contendrá el token de autorización, dependiendo de la seguridad de la base de datos, para trabajar en la base de datos. Si esta no está protegida para lectura y/o escritura no será necesaria.
 -  **SoloContenidoIndice** indicará que en la descarga de datos se descargue sólo los valores (sin el contenido). Por defecto es "false".
     
-##### Los Modos de Trabajo de la Función FirebaseDB
+#### Los Modos de Trabajo de la Función FirebaseDB
   - **POST**     - Postear (añade un ID al JSON posteado y retorna dicho ID)
   - **PATCH**    - Agregar mensaje JSON a una ***Dirección*** sin borrar la información existente (actualizar).
   - **PUT**      - Añadir valor JSON a una ***Dirección***.
@@ -189,6 +236,10 @@ Hay tres formas de enviar información a la base de datos:
 - 3) Con el modo *PATCH*
 
 Cada modo funciona de manera similar, pero coloca la información de una manera específica.
+
+
+<div id='id14' />
+
 - Con **POST** enviaremos una carga util de datos en formato JSON que será localizada en una dirección específica usando un identificador *temporal* que organizará los datos en el orden en el que se suban. Como cuando posteas en una red social.
 
 El botón *POST* del ejemplo adjunto en este repositorio, sería:
@@ -212,8 +263,10 @@ El botón *POST* del ejemplo adjunto en este repositorio, sería:
           Respuesta = FirebaseDB("POST", Direccion, Mensaje, TokenAutorizacion)
 
       End Sub
+
+<div id='id16' />
       
-- Con **PUT** enviaremos los datos y se localizarán en la dirección indicada. Si se vuelve a enviar otra carga útil borrará el registro anterior sustituyendo los valores diferentes y eliminando los que ya no están incluidos. 
+- Con **PUT** enviaremos los datos y se localizarán en la dirección indicada. Si se vuelve a enviar otra carga útil con la misma dirección borrará el registro anterior sustituyendo los valores diferentes y eliminando los que ya no están incluidos. 
 
 El botón *PUT* del ejemplo adjunto en este repositorio, sería:
 
@@ -238,6 +291,8 @@ El botón *PUT* del ejemplo adjunto en este repositorio, sería:
       End Sub
 
 
+<div id='id15' />
+      
 - Con **PATCH** enviaremos la carga util, se añadirán nuevos valores sin tocar los que ya estaban y no están incluidos en el envío a no ser que tengan el mismo nombre, lo que hará que se actualice el contenido de ese valor.
 
 El botón *PATCH* del ejemplo adjunto en este repositorio, sería:
@@ -288,7 +343,7 @@ Para recibir los datos desde Firebase se debe requerir directamente la direcció
 		'   con esta información podemos controlar los datos devueltos por el servidor.
 		    Respuesta = FirebaseDB("GET", Direccion, Mensaje, TokenAutorizacion)
 		    nRespuesta = arrayLength(Respuesta)
-		    If nRespuesta = 0 Then Exit Sub
+		    If nRespuesta = 0 Then Goto fin
 		    
 		    On Error Resume Next
 		    For i = 0 To nRespuesta - 1
