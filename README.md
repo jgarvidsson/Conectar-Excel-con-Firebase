@@ -1,5 +1,11 @@
 # Conectar Excel con Firebase
 
+**Índice**
+1. [Antes de Empezar](#id1)
+2. [Las Credenciales](#id2)
+
+
+<div id='id1' />
 ## Antes de Empezar
 Antes de empezar es necesario remarcar que para conectar **Firebase** con **EXCEL** se requiere tener creada y configurada una base de datos.
 
@@ -8,6 +14,7 @@ El ejemplo adjunto en este repositorio, crea una carpeta en "Mis Documentos" (Do
 ## Las Credenciales
 Para trabajar con Firebase, además de los datos principales proporcionados por el servidor y que son necesarios para que Firebase reconozca tu aplicación como app con privilegios de Administrador
 
+<div id='id2' />
 ### Credenciales del Servidor
 Se precisa la siguiente información por parte del servidor:
 
