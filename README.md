@@ -3,10 +3,32 @@
 **Índice**
 1. [Antes de Empezar](#id1)
 2. [Las Credenciales](#id2)
-
-
-
-<div id='id1' />
+   - [Credenciales del Servidor](#id3)
+   - [Credenciales del Usuario](#id4)
+   - [Las Reglas de Seguridad de Firebase](#id5)
+3. [Los Archivos Adjuntos](#id6)
+   - [Módulos VBA (.bas)](#id7)
+   - [Archivo EXCEL (.xlsm)](#id8)
+4. [Conexión con Firebase](#id9)
+   - [IdToken](#id10)
+   - [Carga Util (Payload)](#id11)
+5. [Funciones ](#id12)
+   - [FirebaseDB](#id12)
+   > - [FirebaseDB](#id12)
+   - [DevolverValorEspecificoDeFirebase]
+   - [FirebasePC]
+   - [DevolverValorEspecificoDeJSONLocal]
+   - [DevolverValorFirebase]
+   - [GenerarJSONError]
+   - [RegistrarUso]
+   - [ComprobarConexion]
+   - [AlmacenarJSON]
+   - [AccionConUsuario]
+   - [ParametroDB]
+   - [arrayLength]
+   - [CheckJSON]
+   
+<div id='id12' />
 
 ## Antes de Empezar 
 
@@ -21,6 +43,8 @@ El ejemplo adjunto en este repositorio, crea una carpeta en "Mis Documentos" (Do
 Para trabajar con Firebase, además de los datos principales proporcionados por el servidor y que son necesarios para que Firebase reconozca tu aplicación como app con privilegios de Administrador
 
 
+<div id='id3' />
+
 ### Credenciales del Servidor
 Se precisa la siguiente información por parte del servidor:
 
@@ -31,7 +55,17 @@ Se precisa la siguiente información por parte del servidor:
 
 El servidor puede estar localizado en USA o EU, y es posible que aparezcan otras posibilidades en el futuro. Confirmad antes cual es la dirección donde almacenareis vuestra BD (lo selecionais en la configuración) y dejar habilitada una de las dos **dbURL**
 
-#### Las Reglas de Seguridad de Firebase
+<div id='id4' />
+
+### Credenciales de Usuario
+Para poder manejar los datos del servidor, se requierirá que el Usuario esté registrado en la base de datos.
+Las credenciales del **Usuario** se componen de un Correo Electrónico y un Password. Estos datos los suministra el Administrador o puede activarse desde un Formulario creado en EXCEL a través de una de las Funciones que podreis ver más adelante. En el  archivo de ***Test*** contenido en este repositorio, las credenciales pueden integrarse en el programa a través de variables privadas o introducirse a través de *cajas de texto*.
+
+En mis proyectos EXCEL<->FireBase uso un archivo encriptado que contiene la información del Servidor y del Usuario. El Usuario final no necesita conocer esta información porque no va a usarla con fines personales, sólo es una llave de acceso a una información contenida en el servidor y que será como intercambiador de datos y centralización de información. Yo les paso el archivo Excel y un 'permit' y pueden trabajar sin problemas.
+
+<div id='id5' />
+
+### Las Reglas de Seguridad de Firebase
 Es muy importante recordar que, dependiendo de las reglas de Uso configuradas para su base de datos, el registro o visualización de datos requerirá de credenciales específicas. Esta **Reglas** se configuran en la *consola de Firebase*, en el menú *Reglas* dentro de *RealTime Database*.
 
 Sin configuramos las Reglas de las siguiente manera.
@@ -60,11 +94,6 @@ Iniciamos la regla con 'rules' para que el servidor sepa qué estamos configuran
   - 'Test' contendrá todas los registros de datos realizados en el ejemplo.
 
  Si quereis probar con otros nombres o añadir más no habrá problemas siempre y cuando respeteis las **Reglas** de seguridad configuradas.
-
-### Credenciales del Usuario
-Las credenciales del **Usuario** son un Correo Electrónico y un Password. Estos datos los suministra el Administrador o puede activarse desde un Formulario creado en EXCEL a través de una de las Funciones que podreis ver más adelante. En el  archivo de ***Test*** contenido en este repositorio, las credenciales pueden integrarse en el programa a través de variables privadas o introducirse a través de *cajas de texto*.
-
-En mis proyectos EXCEL<->FireBase uso un archivo encriptado que contiene la información del Servidor y del Usuario. El Usuario final no necesita conocer esta información porque no va a usarla con fines personales, sólo es una llave de acceso a una información contenida en el servidor y que será como intercambiador de datos y centralización de información. Yo les paso el archivo Excel y un 'permit' y pueden trabajar sin problemas.
 
 ## Módulos VBA (.bas)
 
