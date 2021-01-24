@@ -14,34 +14,34 @@
    - [Carga Util (Payload)](#id11)
 5. [Funciones ](#id12)
    - [FirebaseDB](#id13)
-   - - [Modo POST](#id14)
-   - - [Modo PATCH](#id15)
-   - - [Modo PUT](#id16)
-   - - [Modo GET](#id17)
-   - - [Modo DELETE](#id18)
-   - - [Modo DOWNLOAD](#id19)
-   - - [Modo BACKUP](#id20)
-   - - [Modo MOVE](#id21)
-   - - [Modo COPY](#id22)
+     - [Modo POST](#id14)
+     - [Modo PATCH](#id15)
+     - [Modo PUT](#id16)
+     - [Modo GET](#id17)
+     - [Modo DELETE](#id18)
+     - [Modo DOWNLOAD](#id19)
+     - [Modo BACKUP](#id20)
+     - [Modo MOVE](#id21)
+     - [Modo COPY](#id22)
    - [DevolverValorEspecificoDeFirebase](#id23)
    - [DevolverValorAutorizacion](#id24)
    - [FirebasePC](#id25)
    - [DevolverValorEspecificoDeJSONLocal](#id26)
    - [Funciones de Registro](#id27)
-   - - [GenerarJSONError](#id28)
-   - - [RegistrarUso](#id29)
-   - - [AlmacenarJSON](#id30)
-     [Acciones para USUARIO](#id31)
-   - - [Crear Nuevo Usuario](#id32)
-   - - [Crear Usuario Anonimo](#id33)
-   - - [Requerir Información de un Usuario](#id34)
-   - - [Actualizar Información de un Usuario](#id35)
-   - - [Activar IdToken de un Usuario](#id36)
-   - - [Borrar a un Usuario](#id37)
-   - - [Petición de Nuevo Password de Usuario](#id38)
-   - - [Cambiar eMail](#id39)
-   - - [Cambiar Password](#id40)
-   - - [Qué responde el servidor](#id41)
+     - [GenerarJSONError](#id28)
+     - [RegistrarUso](#id29)
+     - [AlmacenarJSON](#id30)
+   - [Acciones para USUARIO](#id31)
+     - [Crear Nuevo Usuario](#id32)
+     - [Crear Usuario Anonimo](#id33)
+     - [Requerir Información de un Usuario](#id34)
+     - [Actualizar Información de un Usuario](#id35)
+     - [Activar IdToken de un Usuario](#id36)
+     - [Borrar a un Usuario](#id37)
+     - [Petición de Nuevo Password de Usuario](#id38)
+     - [Cambiar eMail](#id39)
+     - [Cambiar Password](#id40)
+     - [Qué responde el servidor](#id41)
    - [ComprobarConexion](#id42)
 6. [ERRORES]
    - [Lista de Errores Comunes]
@@ -553,8 +553,9 @@ Para este contexto se usa para guardar cadenas con estructura JSON en una ruta i
 
 <div id='id31'
 
-## AccionConUsuario
-Para trabajar con usuarios usaremos la siguiente funcion:
+## Acciones para USUARIO
+
+Para trabajar con usuarios usaremos la función **AccionConUsuario**:
 
 		Function AccionConUsuario(Accion As String, IDUsereMail As String, IDUserPassword As String, _
 		                            Optional IDTokenUser As String = "", Optional IDNameUser As String = "", _
@@ -567,55 +568,116 @@ Para trabajar con usuarios usaremos la siguiente funcion:
   - **IDNameUser**: Se indicará el Nombre de **Usuario** que será mostrado por el servidor (Valor opcional).
   - **IDURLFoto**: Se indicará la dirección Web de la foto de perfil del **Usuario** (Valor opcional).
 
-### Acciones de Usuario
-Para indicar qué acción se llevará a cabo, se indicará la palabra clave correspondiente:
+Para indicar qué acción se llevará a cabo, se indicará una palabra clave específica. A continuación, vamos a ver que parámetros serán necesarios para llevar a cabo una acción sobre un **Usuario**. Para más información, ver el código de ejemplo integrado en el archivo excel del repositorio.
 
 <div id='id32'
 
-  - **NEW**: Creará un nuevo usuario a través del *Correo Electrónico* y una *clave de acceso*.
+## Crear nuevo Usuario
+Creará un nuevo usuario a través del *Correo Electrónico* y una *clave de acceso*. Se realizará con el parámetro en *Accion* **NEW**.
 
   		AccionConUsuario("NEW", eMail, Password)
 
+
 <div id='id33'
- 		
-  - **ANONIMUS**: Permite crear un Usuario Anonimo con las mismas características de un Usuario Registrado. El IdToken generado cadurá pasada una hora. Se puede actualizar de ***ANONIMUS*** a ***Usuario Registrado*** usando el **IdToken** generado para el primero y actualizando los datos con la **Accion UPDATE**.
+
+## Crear Usuario Anonimo	
+Permite crear un Usuario Anonimo con las mismas características de un Usuario Registrado. El IdToken generado cadurá pasada una hora. Se puede actualizar de ***ANONIMUS*** a ***Usuario Registrado*** usando el **IdToken** generado para el primero y actualizando los datos con la **Accion UPDATE**. Se realizará con el parámetro en *Accion* **ANONIMUS**.
 
   		AccionConUsuario("ANONIMUS", "", "")
 
+
 <div id='id34'
 
-  - **INFO**: Recupera los datos del Usuario cuyo IdToken esté activo.
+## Requerir información de un Usuario
+Recupera los datos del Usuario cuyo IdToken esté activo. Se realizará con el parámetro en *Accion* **INFO**.
 
   		AccionConUsuario("INFO", eMail, Password)
 
+
 <div id='id35'
 
-  - **UPDATE**: Actualiza la información de un Usuario excepto la dirección de Correo Electrónico. Si actualiza también refresca el IdToken, pero tiene que ser antes de que caduque (tienen una vida de 3600 segundos).
+## Actualizar información de un Usuario
+Actualiza la información de un Usuario excepto la dirección de Correo Electrónico y el Password. Esta acción también refresca el IdToken, pero tiene que ser antes de que caduque (tienen una vida de 3600 segundos). Se realizará con el parámetro en *Accion* **UPDATE**.
 
-  		AccionConUsuario("UPDATE", eMail, Password, IdToken, Nombre, URLfoto)
+  		AccionConUsuario("UPDATE", eMail, Password, IdToken, Nombre, URLfoto) Se realizará con el parámetro en *Accion* **UPDATE**.
+
 
 <div id='id36'
 
-  - **AUTH**: Recupera el IdToken de un **Usuario Registrado**.
+## Activa el IdToken de un Usuario
+Recupera un IdToken actualizado de un **Usuario Registrado**. Esto es necesario para realizar tareas en la base de datos, sin este IdToken, no podrán realizarse acciones sobre los datos de la misma si las reglas de seguridad así lo espacifícan. Se realizará con el parámetro en *Accion* **AUTH**.
 
   		AccionConUsuario("AUTH", eMail, Password)
 
+
 <div id='id37'
 
-  - **REMOVE**: Borra el registro de un **Usuario**.
+## Borra un Usuario
+Borra al **Usuario** registrado cuyas credenciales son indicadas. Se realizará con el parámetro en *Accion* **REMOVE**.
 
 		AccionConUsuario("REMOVE", eMail, Password)
 
 
+<div id='id38'
 
+## Petición de nuevo password de Usuario
+Si un **Usuario** registrado ha perdido su **Password**, es posible enviarse un eMail con la acción de recuperación del mismo. Se realizará con el parámetro en *Accion* **RESETPASSWORD**.
+
+		AccionConUsuario("RESETPASSWORD", eMail, "")
+
+
+<div id='id39'
+
+## Cambiar eMail
+Permite a un **Usuario** registrado cambiar el correo electrónico de sus credenciales. Se realizará con el parámetro en *Accion* **CHANGEMAIL**.
+
+		AccionConUsuario("CHANGEMAIL", eMail, "", IDTokenUser))
+
+
+<div id='id40'
+
+## Cambiar Password
+Permite a un **Usuario** registrado cambiar el password de sus credenciales. Se realizará con el parámetro en *Accion* **CHANGEPASSWORD**.
 
   - **CHANGEPASSWORD**: Permite cambiar el password de un **Usuario Registrado**.
 
-		AccionConUsuario("CHANGEPASSWORD", ·"", Password, IDTokenUser)
+		AccionConUsuario("CHANGEPASSWORD", "", Password, IDTokenUser)
 
 
+<div id='id38'
 
-La función **AccionConUsuario** devuelve una matriz con los datos extraidos y pueden ser tomados usando un bucle ***For...Next simple***. En el siguiente ejemplo se muestra la acción de Crear Nuevo Usuario del archivo de Test incluido en este repositorio.
+## Qué optenemos del Servidor
+Cuando realizamos una petición con la función **AccionConUsuario** recibiremos de vuelta una matriz de datos. Estos datos pueden ser extraidos y desplagados usando un bucle ***For...Next simple***. Para ello es muy importante saber qué palabras clave contendrá dicha matriz.
+Algunas palabras claves han sido modificadas (dentro del módulo Firebase) para obtener unos resultados más funcionales. En la tabla siguiente se muestran las palabras clave que obtendremos en la matriz, marcando con un :envelope: los no modificados y con un :love_letter: los que se han modificado.
+
+| Nombre | Descripción | Acciones |
+| :--- | --- | --- |
+| :envelope: kind | Devuelve el tipo de operación solicitada al **Servidor** | NEW > ANONIMUS > REMOVE > AUTH > INFO > CHANGEPASSWORD |
+| :envelope: localID | Devuelve el Identificador de **Usuario** | NEW > ANONIMUS > AUTH > INFO > CHANGEPASSWORD |
+| :envelope: email | Devuelve el eMail de **Usuario** | NEW > AUTH > INFO > CHANGEPASSWORD |
+| :envelope: passwordHash | Devuelve la version del HASH del Password | INFO > CHANGEPASSWORD |
+| :envelope: idToken | Devuelve el código de Autorización del **Usuario** actualizado | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
+| :envelope: refreshToken | Devuelve el código de Autorización de refresco del **Usuario** | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
+| :envelope: expiresIn | Devuelve el tiempo en segundo en los que el Id Token caducará (*por defecto 3600 s.*) | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
+| :envelope: displayName | Devuelve el nombre de **Usuario** que será mostrado | AUTH > CHANGEPASSWORD |
+| :envelope: registered | Devuelve un valor buleano indicando si el correo electrónico es para una cuenta existente | AUTH |
+| :envelope: emailVerified | Devuelve un valor buleano indicando si el correo electrónico de inicio de sesión está verificado | INFO > CHANGEPASSWORD |
+| :envelope: passwordUpdateAt | Devuelve el *timestamp* en milisegundos en la que se cambió por última vez la contraseña de la cuenta | INFO  |
+| :envelope: rawId | Devuelve el Identificador de Credenciales | INFO |
+| :envelope: validSince | Devuelve la marca de tiempo, en segundos, que marca un límite, antes del cual el token de ID de Firebase se considera revocado | INFO |
+| :envelope: lastLoginAt | Devuelve el *timestap* en milisegundos en la que la cuenta inició sesión por última | INFO |
+| :envelope: createdAt | Devuelve el *timestap* en milisegundos en la que la cuenta fue creada | INFO |
+| :envelope: lastRefreshAt | Devuelve el *timestap* en milisegundos del último refresco de información del **Usuario** | INFO |
+| :envelope: photoUrl | Devuelve la dirección de la imagen de **Usuario** | INFO |
+| providerUserInfo | Devuelve la lista de todos los objetos de proveedor vinculados que contienen "providerId" y "federatedId". | CHANGEPASSWORD |
+| :envelope: providerId | Devuelve el ID de proveedor vinculado (por ejemplo, "google.com" para el proveedor de Google). Sino va vinculado a ningún servidio mostrará la palabra clave *password* | INFO |
+| :love_letter: puiemail | Devuelve el eMail de **Usuario** |  |
+| :love_letter: puidisplayName | Devuelve el nombre de **Usuario** que será mostrado |  |
+| :love_letter: puiphotoUrl | Devuelve la dirección de la imagen de **Usuario** | INFO |
+| :envelope: federateId | Devuelve el identificador ID único de la cuenta IdP (proveedor de Identidad) | INFO |
+
+
+Con esta información, podemos extraer los datos de la siguiente manera (ejemplo localizado en el archivo EXCEL adjunto a este repositorio):
 
 
 		Private Sub CrearUsuarioNuevo_Click()
@@ -644,34 +706,6 @@ La función **AccionConUsuario** devuelve una matriz con los datos extraidos y p
 		    Next i
     		If nRespuesta > 0 Then Erase Respuesta
 		End Sub
-
-<div id='id38'
-
-
-
-### Qué optenemos del Servidor
-Es muy importante saber con qué palabras clave responderá el servidor cuando nuestra petición haya sido aceptada y todo haya ido bien, de estas palabras clave podremos sacar la información que necesitemos.
-
-| Nombre | Descripción | Acciones |
-| :---: | --- | --- |
-| kind | Devuelve el tipo de operación solicitada al **Servidor** | NEW > ANONIMUS > REMOVE > AUTH > INFO > CHANGEPASSWORD |
-| localID | Devuelve el Identificador de **Usuario** | NEW > ANONIMUS > AUTH > INFO > CHANGEPASSWORD |
-| email | Devuelve el eMail de **Usuario** | NEW > AUTH > INFO > CHANGEPASSWORD |
-| passwordHash | Devuelve la version del HASH del Password | INFO > CHANGEPASSWORD |
-| providerUserInfo | Devuelve la lista de todos los objetos de proveedor vinculados que contienen "providerId" y "federatedId". | CHANGEPASSWORD |
-| idToken | Devuelve el código de Autorización del **Usuario** actualizado | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
-| refreshToken | Devuelve el código de Autorización de refresco del **Usuario** | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
-| expiresIn | Devuelve el tiempo en segundo en los que el Id Token caducará (*por defecto 3600 s.*) | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
-| displayName | Devuelve el nombre de **Usuario** que será mostrado | AUTH > CHANGEPASSWORD |
-| registered | Devuelve un valor buleano indicando si el correo electrónico es para una cuenta existente | AUTH |
-| emailVerified | Devuelve un valor buleano indicando si el correo electrónico de inicio de sesión está verificado | INFO > CHANGEPASSWORD |
-| passwordUpdateAt | Devuelve el *timestamp* en milisegundos en la que se cambió por última vez la contraseña de la cuenta | INFO  |
-| federateId | Devuelve el identificador ID único de la cuenta IdP (proveedor de Identidad) | INFO |
-| rawId | Devuelve el Identificador de Credenciales | INFO |
-| validSince | Devuelve la marca de tiempo, en segundos, que marca un límite, antes del cual el token de ID de Firebase se considera revocado | INFO |
-| lastLoginAt | Devuelve el *timestap* en milisegundos en la que la cuenta inició sesión por última | INFO |
-| createdAt | Devuelve el *timestap* en milisegundos en la que la cuenta fue creada | INFO |
-| lastRefreshAt | Devuelve el *timestap* en milisegundos del último refresco de información del **Usuario** | INFO |
 
 
 ## ComprobarConexion
