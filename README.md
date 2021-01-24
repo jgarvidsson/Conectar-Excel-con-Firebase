@@ -31,14 +31,18 @@
    - - [GenerarJSONError](#id28)
    - - [RegistrarUso](#id29)
    - - [AlmacenarJSON](#id30)
-   - [AccionConUsuario](#id31)
-   - - [NEW](#id32)
-   - - [ANONIMUS](#id33)
-   - - [INFO](#id34)
-   - - [UPDATE](#id35)
-   - - [AUTH](#id36)
-   - - [REMOVE](#id37)
-   - [ComprobarConexion](#id38)
+     [Acciones para USUARIO](#id31)
+   - - [Crear Nuevo Usuario](#id32)
+   - - [Crear Usuario Anonimo](#id33)
+   - - [Requerir Información de un Usuario](#id34)
+   - - [Actualizar Información de un Usuario](#id35)
+   - - [Activar IdToken de un Usuario](#id36)
+   - - [Borrar a un Usuario](#id37)
+   - - [Petición de Nuevo Password de Usuario](#id38)
+   - - [Cambiar eMail](#id39)
+   - - [Cambiar Password](#id40)
+   - - [Qué responde el servidor](#id41)
+   - [ComprobarConexion](#id42)
 6. [ERRORES]
    - [Lista de Errores Comunes]
 
@@ -602,6 +606,15 @@ Para indicar qué acción se llevará a cabo, se indicará la palabra clave corr
 
 		AccionConUsuario("REMOVE", eMail, Password)
 
+
+
+
+  - **CHANGEPASSWORD**: Permite cambiar el password de un **Usuario Registrado**.
+
+		AccionConUsuario("CHANGEPASSWORD", ·"", Password, IDTokenUser)
+
+
+
 La función **AccionConUsuario** devuelve una matriz con los datos extraidos y pueden ser tomados usando un bucle ***For...Next simple***. En el siguiente ejemplo se muestra la acción de Crear Nuevo Usuario del archivo de Test incluido en este repositorio.
 
 
@@ -634,6 +647,33 @@ La función **AccionConUsuario** devuelve una matriz con los datos extraidos y p
 
 <div id='id38'
 
+
+
+### Qué optenemos del Servidor
+Es muy importante saber con qué palabras clave responderá el servidor cuando nuestra petición haya sido aceptada y todo haya ido bien, de estas palabras clave podremos sacar la información que necesitemos.
+
+| Nombre | Descripción | Acciones |
+| :---: | --- | --- |
+| kind | Devuelve el tipo de operación solicitada al **Servidor** | NEW > ANONIMUS > REMOVE > AUTH > INFO > CHANGEPASSWORD |
+| localID | Devuelve el Identificador de **Usuario** | NEW > ANONIMUS > AUTH > INFO > CHANGEPASSWORD |
+| email | Devuelve el eMail de **Usuario** | NEW > AUTH > INFO > CHANGEPASSWORD |
+| passwordHash | Devuelve la version del HASH del Password | INFO > CHANGEPASSWORD |
+| providerUserInfo | Devuelve la lista de todos los objetos de proveedor vinculados que contienen "providerId" y "federatedId". | CHANGEPASSWORD |
+| idToken | Devuelve el código de Autorización del **Usuario** actualizado | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
+| refreshToken | Devuelve el código de Autorización de refresco del **Usuario** | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
+| expiresIn | Devuelve el tiempo en segundo en los que el Id Token caducará (*por defecto 3600 s.*) | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
+| displayName | Devuelve el nombre de **Usuario** que será mostrado | AUTH > CHANGEPASSWORD |
+| registered | Devuelve un valor buleano indicando si el correo electrónico es para una cuenta existente | AUTH |
+| emailVerified | Devuelve un valor buleano indicando si el correo electrónico de inicio de sesión está verificado | INFO > CHANGEPASSWORD |
+| passwordUpdateAt | Devuelve el *timestamp* en milisegundos en la que se cambió por última vez la contraseña de la cuenta | INFO  |
+| federateId | Devuelve el identificador ID único de la cuenta IdP (proveedor de Identidad) | INFO |
+| rawId | Devuelve el Identificador de Credenciales | INFO |
+| validSince | Devuelve la marca de tiempo, en segundos, que marca un límite, antes del cual el token de ID de Firebase se considera revocado | INFO |
+| lastLoginAt | Devuelve el *timestap* en milisegundos en la que la cuenta inició sesión por última | INFO |
+| createdAt | Devuelve el *timestap* en milisegundos en la que la cuenta fue creada | INFO |
+| lastRefreshAt | Devuelve el *timestap* en milisegundos del último refresco de información del **Usuario** | INFO |
+
+
 ## ComprobarConexion
 Con esta función nos conectamos a la base de datos y requerimos un valor específico. Si está conectado o no.
 
@@ -649,6 +689,8 @@ Cuando enviamos información al servidor para realizar una petición, en respues
  | Error | Descripción | Acción |
  | :---: | --- | --- |
  | **EMAIL_NOT_FOUND** | El eMail introducido por el usuario no está registrado. | Comprueba la sintaxis de los datos introducidos o ponte en contacto con el **Administrador** para registrar tu **Usuario**. |
- | **INVALID_PASSWORD** | El password correspondiente al eMail introducido no es correcto | Compruebe la sintaxis de los datos introducidos o realice una petición de recuperación al Administrador. |
+ | **INVALID_PASSWORD** | El password correspondiente al eMail introducido no es correcto. | Compruebe la sintaxis de los datos introducidos o realice una petición de recuperación al Administrador. |
+ | **MISSING_PASSWORD** | El password que está intentando cambiar está vacío. | Revise el campo que contiene el password, o está vacío o el nombre es incorrecto. |
  | **INVALID_ID_TOKEN** | Está intentando realizar una acción sin estar identificado o con un IdToken diferente al **Usuario** indicado. | Inicie sesión con sus credenciales para realizar la acción deseada. |
  | **CREDENTIAL_TOO_OLD_LOGIN_AGAIN** | Ha intentado realizar alguna acción en el servidor con una credencial caducada. | Vuelva a conextarse para actualizar el IdToken de **Usuario**. |
+ | EMAIL_EXIST | Intenta crear un **Usuario** con una eMail que ya existe. | Compruebe las credenciales de los usuario existentes o pruebe con otra dirección de correo electrónico. |
