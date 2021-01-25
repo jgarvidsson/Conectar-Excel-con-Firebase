@@ -72,9 +72,9 @@ Para trabajar con Firebase, se requieren credenciales de conexión proporcionada
 Se precisa la siguiente información por parte del servidor:
 
 		Private Const dbNAME As String = "<nombre de la base de datos>"                             ' Nombre de la base de datos (sin cabecera http ni servidor).
-	   'Private Const dbURL As String = "https://" & dbNAME & ".firebaseio.com/"                    ' Direccion de la base de datos.    ' Servidor en USA
+	       'Private Const dbURL As String = "https://" & dbNAME & ".firebaseio.com/"                    ' Direccion de la base de datos.    ' Servidor en USA
 		Private Const dbURL As String = "https://" & dbNAME & ".europe-west1.firebasedatabase.app/" ' Direccion de la base de datos.    ' Servidor en Europa
-		Private Const dbAPI As String = "<API>"                   									' API de la base de datos
+		Private Const dbAPI As String = "<API>"                   				    ' API de la base de datos
 
 El servidor puede estar localizado en USA o EU, y es posible que aparezcan otras posibilidades en el futuro. Confirmad antes cual es la dirección donde almacenareis vuestra BD (lo selecionais en la configuración) y dejar habilitada una de las dos **dbURL**
 
@@ -105,10 +105,10 @@ Cualquiera que tenga las Credenciales del Servidor (API y dirección del Servido
 En cambio, si tenemos en cuenta nuestras necesidades podremos configurar dichas reglas de tal menera que sólo podamos acceder a los datos registrados cuando estemos 'logeados' como **Usuario** de la base de datos.
 
 		{
-			"rules": {
+		  "rules": {
 		     "Conexion": {".write": "auth != null",".read": true},
 		     "Test":     {".write": "auth != null",".read": "auth != null"}
-								}
+			   }
 		}
 
 Iniciamos la regla con 'rules' para que el servidor sepa qué estamos configurando. Como ejemplo de este repositorio se han creado dos directorios dentro de la base de datos: 'Conexion' y 'Test'.
@@ -223,7 +223,9 @@ Estructura JSON usada en este repositorio:
 
 La Función principal para trabajar con la base de datos de *Fiebase* es **FirebaseDB**. Esta función, y dependiendo del modo de trabajo requerido, permite trabajar con la base de datos en modo online realizando varias tareas especícicas.
 
-    Function FirebaseDB(Mode As String, Direccion As String, Mensaje As String, Optional claveautorizacion As String = "", Optional SoloContenidoIndice As Boolean = False) As Variant
+    Function FirebaseDB(Mode As String, Direccion As String, Mensaje As String, _
+                        Optional claveautorizacion As String = "", _
+			Optional SoloContenidoIndice As Boolean = False) As Variant
     
 -  **Mode** representa el tipo de trabajo que se va a realizar (ver siguiente lista).
 -  **Direccion** indica el nombre del árbol principal o Valor que contendrá la información con la que se quiere trabajar en la base de datos.
@@ -492,7 +494,8 @@ El botón *COPIAR* del ejemplo adjunto en este repositorio, sería:
 
 Hay funciones que trabajan de manera concreta como **DevolverValorEspecificoDeFirebase**:
 
-		Function DevolverValorEspecificoDeFirebase(Direccion As String, Valor As String, Optional claveautorizacion As String = "") As String
+		Function DevolverValorEspecificoDeFirebase(Direccion As String, Valor As String, _
+							   Optional claveautorizacion As String = "") As String
 
 Nos devuelve el contenido de un **Valor** especificado en el campo *Valor* en una *Direccion* de la *Base De Datos* sin tener que manejar JSON por parte del **Usuario**. Esta función se puede descartar y usar FirebaseDB en modo **GET**, pero la diferencié así por comodidad en algunos casos específicos.
 
@@ -511,7 +514,8 @@ Nos retorna un valor específico de la cadena devuelta por el servidor cuando se
 ## FirebasePC
 Función que permite trabajar con los archivos JSON descargados de la Base de Datos. En este contexto no se ha usado, ya que está más centrado en el proceso de datos de **Realtime Database**. :point_right: **Esta función no está desarrollada completamente aún** :point_left:.
 
-		Function FirebasePC(Mode As String, Direccion As String, Mensaje As String, Optional SoloContenidoIndice As Boolean = False) As Variant
+		Function FirebasePC(Mode As String, Direccion As String, Mensaje As String, _
+				    Optional SoloContenidoIndice As Boolean = False) As Variant
 
 La estructura es similar a la ***Función FirebaseDB***, pero los datos se maneja off-line.
 Sólo funciona con un modo: **GET** que nos permite abrir un archivo JSON local y chequearlo para poder extraer información.
@@ -659,12 +663,12 @@ Algunas palabras claves han sido modificadas (dentro del módulo Firebase) para 
 
 | Nombre | Descripción | Acciones |
 | :--- | --- | --- |
-| :envelope: kind | Devuelve el tipo de operación solicitada al **Servidor** | _NEW > _ANONIMUS > REMOVE > AUTH > INFO > CHANGEPASSWORD |
-| :envelope: idToken | Devuelve el código de Autorización del **Usuario** actualizado | _NEW > _ANONIMUS > AUTH > CHANGEPASSWORD |
-| :envelope: email | Devuelve el eMail de **Usuario** | _NEW > AUTH > INFO > CHANGEPASSWORD |
-| :envelope: refreshToken | Devuelve el código de Autorización de refresco del **Usuario** | _NEW > _ANONIMUS > AUTH > CHANGEPASSWORD |
-| :envelope: expiresIn | Devuelve el tiempo en segundo en los que el Id Token caducará (*por defecto 3600 s.*) | _NEW > _ANONIMUS > AUTH > CHANGEPASSWORD |
-| :envelope: localID | Devuelve el Identificador de **Usuario** | _NEW > _ANONIMUS > AUTH > INFO > CHANGEPASSWORD |
+| :envelope: kind | Devuelve el tipo de operación solicitada al **Servidor** | NEW > _NONIMUS > REMOVE > AUTH > INFO > CHANGEPASSWORD |
+| :envelope: idToken | Devuelve el código de Autorización del **Usuario** actualizado | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
+| :envelope: email | Devuelve el eMail de **Usuario** | NEW > AUTH > INFO > CHANGEPASSWORD |
+| :envelope: refreshToken | Devuelve el código de Autorización de refresco del **Usuario** | NEW > _ANONIMUS > AUTH > CHANGEPASSWORD |
+| :envelope: expiresIn | Devuelve el tiempo en segundo en los que el Id Token caducará (*por defecto 3600 s.*) | NEW > _ANONIMUS > AUTH > CHANGEPASSWORD |
+| :envelope: localID | Devuelve el Identificador de **Usuario** | NEW > ANONIMUS > AUTH > INFO > CHANGEPASSWORD |
 | :envelope: passwordHash | Devuelve la version del HASH del Password | INFO > CHANGEPASSWORD |
 | :envelope: displayName | Devuelve el nombre de **Usuario** que será mostrado | AUTH > CHANGEPASSWORD |
 | :envelope: registered | Devuelve un valor buleano indicando si el correo electrónico es para una cuenta existente | AUTH |
@@ -681,7 +685,7 @@ Algunas palabras claves han sido modificadas (dentro del módulo Firebase) para 
 | :envelope: reason | Devuelve una cadena de error si la petición ha sido rechazada por el Servidor. Este dato no aparece si no hay error| En todas las Acciones |
 | providerUserInfo | Devuelve la lista de todos los objetos de proveedor vinculados que contienen "providerId" y "federatedId". | CHANGEPASSWORD |
 | :envelope: puIproviderId | Devuelve el ID de proveedor vinculado (por ejemplo, "google.com" para el proveedor de Google). Sino va vinculado a ningún servidio mostrará la palabra clave *password* | INFO |
-| :love_letter: puIdisplayName | Devuelve el nombre de **Usuario** que será mostrado |  |
+| :love_letter: puIdisplayName | Devuelve el nombre de **Usuario** que será mostrado |  INFO  |
 | :love_letter: puIphotoUrl | Devuelve la dirección de la imagen de **Usuario** | INFO |
 | :love_letter: puIfederateId | Devuelve el identificador ID único de la cuenta IdP (proveedor de Identidad) | INFO |
 | :love_letter: puIrawId | Devuelve el Identificador de Credenciales | INFO |
