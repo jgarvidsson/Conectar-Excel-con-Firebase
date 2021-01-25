@@ -12,7 +12,7 @@
 4. [Conexión con Firebase](#id9)
    - [IdToken](#id10)
    - [Carga Util (Payload)](#id11)
-5. [Funciones ](#id12)
+5. [Funciones](#id12)
    - [FirebaseDB](#id13)
      - [Modo POST](#id14)
      - [Modo PATCH](#id15)
@@ -43,18 +43,23 @@
      - [Cambiar Password](#id40)
      - [Qué responde el servidor](#id41)
    - [ComprobarConexion](#id42)
-6. [ERRORES]
-   - [Lista de Errores Comunes]
+6. [ERRORES](#id43)
+   - [Lista de Errores Comunes](#id44)
 
 
 
 <div id='id1' />
 
+## Antes de empezar
+
 Antes de empezar es necesario remarcar que para conectar **Firebase** con **EXCEL** se requiere tener creada y configurada una base de datos.
 
-El ejemplo adjunto en este repositorio, crea una carpeta en "Mis Documentos" (Documents) con el nombre de **fbExcel** donde se guardarán datos que necesiten ser descargado (foto de perfil o archivo JSON). Este procedimiento lo uso habitualmente para cuando al finalizar con las pruebas, poder borrar todos los archivos generados de manera más sencilla. Para cambiar el nombre de esta carpeta, abra el modulo **Herramientas** y cambie el contenido de la variable **NombreCarpetaTrabajo** localizado en la cabecera por el que desee.
+El ejemplo adjunto en este repositorio (archivo EXCEL), crea una carpeta en "Mis Documentos" (Documents) con el nombre de **fbExcel** donde se guardarán datos que necesiten ser descargado (foto de perfil o archivo JSON). Este procedimiento lo uso habitualmente para cuando al finalizar con las pruebas, poder borrar todos los archivos generados de manera más sencilla. Para cambiar el nombre de esta carpeta, abra el modulo **Herramientas** y cambie el contenido de la variable **NombreCarpetaTrabajo** localizado en la cabecera por el que desee.
 
 		Private Const NombreCarpetaTrabajo As String = "fbExcel"
+
+
+**Por favor, tened en cuenta que hay que tener un conocimiento medio del manejo de VBA para poder tocar las funciones**.
 
 <div id='id2' />
 
@@ -86,7 +91,7 @@ En mis proyectos EXCEL<->FireBase uso un archivo encriptado que contiene la info
 ### Las Reglas de Seguridad de Firebase
 Es muy importante recordar que, dependiendo de las reglas de Uso configuradas para su base de datos, el registro o visualización de datos requerirá de credenciales específicas. Esta **Reglas** se configuran en la *consola de Firebase*, en el menú *Reglas* dentro de *RealTime Database*.
 
-Sin configuramos las Reglas de las siguiente manera.
+Si configuramos las Reglas de las siguiente manera.
 
 		{
 		  "rules": {
@@ -106,7 +111,7 @@ En cambio, si tenemos en cuenta nuestras necesidades podremos configurar dichas 
 								}
 		}
 
-Iniciamos la regla con 'rules' para que el servidor sepa qué estamos configurando. Como ejemplo de este repositorio se ha creado dos directorios dentro de la base de datos: 'Conexion' y 'Test'.
+Iniciamos la regla con 'rules' para que el servidor sepa qué estamos configurando. Como ejemplo de este repositorio se han creado dos directorios dentro de la base de datos: 'Conexion' y 'Test'.
 
   - 'Conexion' sólo contendrá un valor con un contenido booleano y lo usaremos para comprobar que nuestra aplicación tiene acceso a la base de datos.
   - 'Test' contendrá todas los registros de datos realizados en el ejemplo.
@@ -122,9 +127,10 @@ Iniciamos la regla con 'rules' para que el servidor sepa qué estamos configuran
 
 ### Módulos VBA (.bas)
 
-Este repositorio cuenta con tres módulos necesarios para realizar todas las operaciones de conexión, envío y recepción de datos con **Firebase** usando **EXCEL** y un ejemplo complementado en un archivo de **EXCEL** con todas las funciones explicadas aquí.
+Este repositorio cuenta con tres módulos necesarios para realizar todas las operaciones de conexión, envío y recepción de datos con **Firebase** usando **EXCEL** y un ejemplo complementado en un archivo de **EXCEL** con todas las funciones explicadas aquí.Contiene los instrumentos necesarios para realizar el conexionado con la Base de Datos (con o sin autorización, dependerá del tipo de configuración del usuario) y el manejo del registro de **Usuarios**.
 
-- **Módulo Firebase**: Contiene las funciones necesarias para realizar la acciones requeridas.
+
+- **Módulo Firebase**: Contiene las funciones necesarias para realizar la acciones requeridas. Es el que se desarrollará en este texto.
 - **Módulo JSON**: Contiene las funciones necesarias para leer, escribir y validar archivos JSON (repositorio original https://github.com/omegastripes/VBA-JSON-parser).
 - **Módulo de Herramiemtas**: Contiene funciones extras que ayudan en algunas operaciones dentro de **EXCEL**.
 
@@ -137,13 +143,11 @@ Este repositorio cuenta con tres módulos necesarios para realizar todas las ope
 
 <div id='id9' />
 
-### Módulo Firebase
-Es un módulo escrito a partir de variaciones del Módulo JSON y las indicaciones de la Web de Firebase. Contiene los instrumentos necesarios para realizar el conexionado con la Base de Datos (con o sin autorización, dependerá del tipo de configuración del usuario).
+## Conexión con Firebase
 
+Antes de empezar hay algunos conceptos que tenéis que tener en cuenta. Cuando eres un ***Usuario Registrado en Firebase*** (no *Administrador*), necesitas un código para poder manejar la información de la Base de Datos, el **IdToken**. Estamos suponiendo que tu Base de Datos tiene **Reglas de Seguridad** que protegen la información, [como hemos visto anteriormente](#id5). En todas las explicaciones que se puedan dar en este repositorio, siempre será así.
 
-<div id='id9' />
-
-## Conexión con Firebase]
+Por otro lado tenemos la Carga Útil de información que enviaremos al Servidor cada vez que hagamos una petición. Este detalle es importante cuando manejamos información en la Base de Datos, ya que esta *carga útil* de información está estructurada con el protocolo [JSON](https://es.wikipedia.org/wiki/JSON), si la sintaxis del archivo se pierde, los datos no serán enviados correctamente.
 
 
 <div id='id10' />
@@ -154,7 +158,7 @@ Cuando se crea un Formulario de VBA en EXCEL hay que recordar que el primer paso
 
       Private TokenAutorizacion As String
 
-A continuación, deberá decidir si el Token se requerirá automáticamente o manual.
+A continuación, deberá decidir si el Token se requerirá automáticamente o de forma manual.
 
 - Si es **automático** (con la apertura del Formulario) deberá incluir el codigo siguiente:
 
@@ -166,7 +170,7 @@ A continuación, deberá decidir si el Token se requerirá automáticamente o ma
           passuser = pass
           If ComprobarConexion = True Then
               MostrarEstado NetStatus, "Connection with Server OK", 2
-              TokenAutorizacion = DevolverValorFirebase("idToken", user, pass)           ' Variable privada - Devuelve el token de conexión a iMerlin.
+              TokenAutorizacion = DevolverValorFirebase("idToken", user, pass)           ' Variable privada - Devuelve el token de conexión a la base de datos.
           Else
               MostrarEstado NetStatus, "There is not Server Connection", 3
           End If
@@ -183,7 +187,7 @@ A continuación, deberá decidir si el Token se requerirá automáticamente o ma
           End If
       End Sub
 
-Se ha añadido
+La función buleana **ComprobarConexion** que será explicada más adelante, devuelve un valor verdadero su se ha podido conectar con nuestra base de datos.
 
 Además de **DevolverValorFirebase** que especifica el contenido de un valor "idToken" para extraer el ***Token***, se puede usar la siguiente función:
 
@@ -482,7 +486,7 @@ El botón *COPIAR* del ejemplo adjunto en este repositorio, sería:
       End Sub
 
 
-<div id='id23' 
+<div id='id23'  />
 
 ## Otras funciones
 
@@ -492,7 +496,7 @@ Hay funciones que trabajan de manera concreta como **DevolverValorEspecificoDeFi
 
 Nos devuelve el contenido de un **Valor** especificado en el campo *Valor* en una *Direccion* de la *Base De Datos* sin tener que manejar JSON por parte del **Usuario**. Esta función se puede descartar y usar FirebaseDB en modo **GET**, pero la diferencié así por comodidad en algunos casos específicos.
 
-<div id='id24' 
+<div id='id24'  />
 
 Otra función de las mismas características que la anterior, pero que trabaja sobre los datos del **Usuario** y no de la Base de Datos es **DevolverValorAutorizacion**:
 
@@ -502,7 +506,7 @@ Otra función de las mismas características que la anterior, pero que trabaja s
 Nos retorna un valor específico de la cadena devuelta por el servidor cuando se le consulta por los datos del **Usuario**. Se usa para adquirir el IdToken de **Usuario** para poder trabajar con la base de datos.
 
 
-<div id='id25' 
+<div id='id25'  />
 
 ## FirebasePC
 Función que permite trabajar con los archivos JSON descargados de la Base de Datos. En este contexto no se ha usado, ya que está más centrado en el proceso de datos de **Realtime Database**. :point_right: **Esta función no está desarrollada completamente aún** :point_left:.
@@ -513,7 +517,7 @@ La estructura es similar a la ***Función FirebaseDB***, pero los datos se manej
 Sólo funciona con un modo: **GET** que nos permite abrir un archivo JSON local y chequearlo para poder extraer información.
 
 
-<div id='id26' 
+<div id='id26'  />
 
 ## DevolverValorEspecificoDeJSONLocal
 Trabaja en conjunción cno FirebasePC y permite extraer el contenido de un valor indicado.
@@ -521,14 +525,14 @@ Trabaja en conjunción cno FirebasePC y permite extraer el contenido de un valor
 		Function DevolverValorEspecificoDeJSONLocal(DirectorioYArchivo As String, Valor As String) As String
 
 
-<div id='id27' 
+<div id='id27'  />
 
 ## Funciones de Registro
 Las funciones de registro son funciones que procesan ciertos datos y los envía al servidor sin esperar respuestas, suele usarme para generara 'Logs' de Uso o Registrar Errores que puedan aparecer en el programa. Estas funciones son:
 
-<div id='id28' 
+<div id='id28'  />
 
-- **GenerarJSONError**: Registra los errores que puedan aparecer en la aplicación en modo ***POST***. Si por cuaquier motivo aparece un error de conexión, la cadena JSON que contiene el error se guarda en una carpeta especificada. Se puede crear una Función que intente enviar el contenido de archivos generados en otro momento (no incluido en este repositorio).
+  - **GenerarJSONError**: Registra los errores que puedan aparecer en la aplicación en modo ***POST***. Si por cuaquier motivo aparece un error de conexión, la cadena JSON que contiene el error se guarda en una carpeta especificada. Se puede crear una Función que intente enviar el contenido de archivos generados en otro momento (no incluido en este repositorio).
 
 		Function GenerarJSONError(NumeroError, descripcionerror, Mensaje) As Variant
 
@@ -536,13 +540,13 @@ Un ejemplo de uso: Cuando se intenta abrir un documento y este no existe se reed
 
 <div id='id29' 
 
-- **RegistrarUso**: Registra una cadena JSON con datos específicos en modo ***POST***. De esta manera se puede llevar un control del uso de una aplicación.
+  - **RegistrarUso**: Registra una cadena JSON con datos específicos en modo ***POST***. De esta manera se puede llevar un control del uso de una aplicación.
 
 		Function RegistrarUso(Optional qModulo As String = "", Optional ElToken As String = "")
 
 Un ejemplo de uso: Lo pongo en 'Thisworkbook' para que se registre cada vez que se abra el archivo y en algunos Formularios para registar cuales se usan más. La variable *qModulo* contendría el nombre del Formulario y *ELToken* el IdToken por si donde se va a registrar está protegido con *Reglas de Seguridad*.
 
-<div id='id30'
+<div id='id30' />
 
 - **AlmacenarJSON** es una pequeña Función que recoge una cadena de texto la guarda en el computador. 
 
@@ -551,7 +555,7 @@ Un ejemplo de uso: Lo pongo en 'Thisworkbook' para que se registre cada vez que 
 Para este contexto se usa para guardar cadenas con estructura JSON en una ruta indicada.
 
 
-<div id='id31'
+<div id='id31' />
 
 ## Acciones para USUARIO
 
@@ -570,7 +574,7 @@ Para trabajar con usuarios usaremos la función **AccionConUsuario**:
 
 Para indicar qué acción se llevará a cabo, se indicará una palabra clave específica. A continuación, vamos a ver que parámetros serán necesarios para llevar a cabo una acción sobre un **Usuario**. Para más información, ver el código de ejemplo integrado en el archivo excel del repositorio.
 
-<div id='id32'
+<div id='id32' />
 
 ## Crear nuevo Usuario
 Creará un nuevo usuario a través del *Correo Electrónico* y una *clave de acceso*. Se realizará con el parámetro en *Accion* **NEW**.
@@ -578,7 +582,7 @@ Creará un nuevo usuario a través del *Correo Electrónico* y una *clave de acc
   		AccionConUsuario("NEW", eMail, Password)
 
 
-<div id='id33'
+<div id='id33' />
 
 ## Crear Usuario Anonimo	
 Permite crear un Usuario Anonimo con las mismas características de un Usuario Registrado. El IdToken generado cadurá pasada una hora. Se puede actualizar de ***ANONIMUS*** a ***Usuario Registrado*** usando el **IdToken** generado para el primero y actualizando los datos con la **Accion UPDATE**. Se realizará con el parámetro en *Accion* **ANONIMUS**.
@@ -586,7 +590,7 @@ Permite crear un Usuario Anonimo con las mismas características de un Usuario R
   		AccionConUsuario("ANONIMUS", "", "")
 
 
-<div id='id34'
+<div id='id34' />
 
 ## Requerir información de un Usuario
 Recupera los datos del Usuario cuyo IdToken esté activo. Se realizará con el parámetro en *Accion* **INFO**.
@@ -594,15 +598,15 @@ Recupera los datos del Usuario cuyo IdToken esté activo. Se realizará con el p
   		AccionConUsuario("INFO", eMail, Password)
 
 
-<div id='id35'
+<div id='id35' />
 
 ## Actualizar información de un Usuario
 Actualiza la información de un Usuario excepto la dirección de Correo Electrónico y el Password. Esta acción también refresca el IdToken, pero tiene que ser antes de que caduque (tienen una vida de 3600 segundos). Se realizará con el parámetro en *Accion* **UPDATE**.
 
-  		AccionConUsuario("UPDATE", eMail, Password, IdToken, Nombre, URLfoto) Se realizará con el parámetro en *Accion* **UPDATE**.
+  		AccionConUsuario("UPDATE", eMail, Password, IdToken, Nombre, URLfoto)
 
 
-<div id='id36'
+<div id='id36' />
 
 ## Activa el IdToken de un Usuario
 Recupera un IdToken actualizado de un **Usuario Registrado**. Esto es necesario para realizar tareas en la base de datos, sin este IdToken, no podrán realizarse acciones sobre los datos de la misma si las reglas de seguridad así lo espacifícan. Se realizará con el parámetro en *Accion* **AUTH**.
@@ -610,7 +614,7 @@ Recupera un IdToken actualizado de un **Usuario Registrado**. Esto es necesario 
   		AccionConUsuario("AUTH", eMail, Password)
 
 
-<div id='id37'
+<div id='id37' />
 
 ## Borra un Usuario
 Borra al **Usuario** registrado cuyas credenciales son indicadas. Se realizará con el parámetro en *Accion* **REMOVE**.
@@ -618,7 +622,7 @@ Borra al **Usuario** registrado cuyas credenciales son indicadas. Se realizará 
 		AccionConUsuario("REMOVE", eMail, Password)
 
 
-<div id='id38'
+<div id='id38' />
 
 ## Petición de nuevo password de Usuario
 Si un **Usuario** registrado ha perdido su **Password**, es posible enviarse un eMail con la acción de recuperación del mismo. Se realizará con el parámetro en *Accion* **RESETPASSWORD**.
@@ -626,17 +630,19 @@ Si un **Usuario** registrado ha perdido su **Password**, es posible enviarse un 
 		AccionConUsuario("RESETPASSWORD", eMail, "")
 
 
-<div id='id39'
+<div id='id39' />
 
 ## Cambiar eMail
+
 Permite a un **Usuario** registrado cambiar el correo electrónico de sus credenciales. Se realizará con el parámetro en *Accion* **CHANGEMAIL**.
 
 		AccionConUsuario("CHANGEMAIL", eMail, "", IDTokenUser))
 
 
-<div id='id40'
+<div id='id40' />
 
 ## Cambiar Password
+
 Permite a un **Usuario** registrado cambiar el password de sus credenciales. Se realizará con el parámetro en *Accion* **CHANGEPASSWORD**.
 
   - **CHANGEPASSWORD**: Permite cambiar el password de un **Usuario Registrado**.
@@ -644,37 +650,41 @@ Permite a un **Usuario** registrado cambiar el password de sus credenciales. Se 
 		AccionConUsuario("CHANGEPASSWORD", "", Password, IDTokenUser)
 
 
-<div id='id38'
+<div id='id41' />
 
-## Qué optenemos del Servidor
+## Qué responde el Servidor
+
 Cuando realizamos una petición con la función **AccionConUsuario** recibiremos de vuelta una matriz de datos. Estos datos pueden ser extraidos y desplagados usando un bucle ***For...Next simple***. Para ello es muy importante saber qué palabras clave contendrá dicha matriz.
 Algunas palabras claves han sido modificadas (dentro del módulo Firebase) para obtener unos resultados más funcionales. En la tabla siguiente se muestran las palabras clave que obtendremos en la matriz, marcando con un :envelope: los no modificados y con un :love_letter: los que se han modificado.
 
 | Nombre | Descripción | Acciones |
 | :--- | --- | --- |
-| :envelope: kind | Devuelve el tipo de operación solicitada al **Servidor** | NEW > ANONIMUS > REMOVE > AUTH > INFO > CHANGEPASSWORD |
-| :envelope: localID | Devuelve el Identificador de **Usuario** | NEW > ANONIMUS > AUTH > INFO > CHANGEPASSWORD |
-| :envelope: email | Devuelve el eMail de **Usuario** | NEW > AUTH > INFO > CHANGEPASSWORD |
+| :envelope: kind | Devuelve el tipo de operación solicitada al **Servidor** | _NEW > _ANONIMUS > REMOVE > AUTH > INFO > CHANGEPASSWORD |
+| :envelope: idToken | Devuelve el código de Autorización del **Usuario** actualizado | _NEW > _ANONIMUS > AUTH > CHANGEPASSWORD |
+| :envelope: email | Devuelve el eMail de **Usuario** | _NEW > AUTH > INFO > CHANGEPASSWORD |
+| :envelope: refreshToken | Devuelve el código de Autorización de refresco del **Usuario** | _NEW > _ANONIMUS > AUTH > CHANGEPASSWORD |
+| :envelope: expiresIn | Devuelve el tiempo en segundo en los que el Id Token caducará (*por defecto 3600 s.*) | _NEW > _ANONIMUS > AUTH > CHANGEPASSWORD |
+| :envelope: localID | Devuelve el Identificador de **Usuario** | _NEW > _ANONIMUS > AUTH > INFO > CHANGEPASSWORD |
 | :envelope: passwordHash | Devuelve la version del HASH del Password | INFO > CHANGEPASSWORD |
-| :envelope: idToken | Devuelve el código de Autorización del **Usuario** actualizado | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
-| :envelope: refreshToken | Devuelve el código de Autorización de refresco del **Usuario** | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
-| :envelope: expiresIn | Devuelve el tiempo en segundo en los que el Id Token caducará (*por defecto 3600 s.*) | NEW > ANONIMUS > AUTH > CHANGEPASSWORD |
 | :envelope: displayName | Devuelve el nombre de **Usuario** que será mostrado | AUTH > CHANGEPASSWORD |
 | :envelope: registered | Devuelve un valor buleano indicando si el correo electrónico es para una cuenta existente | AUTH |
 | :envelope: emailVerified | Devuelve un valor buleano indicando si el correo electrónico de inicio de sesión está verificado | INFO > CHANGEPASSWORD |
 | :envelope: passwordUpdateAt | Devuelve el *timestamp* en milisegundos en la que se cambió por última vez la contraseña de la cuenta | INFO  |
-| :envelope: rawId | Devuelve el Identificador de Credenciales | INFO |
 | :envelope: validSince | Devuelve la marca de tiempo, en segundos, que marca un límite, antes del cual el token de ID de Firebase se considera revocado | INFO |
 | :envelope: lastLoginAt | Devuelve el *timestap* en milisegundos en la que la cuenta inició sesión por última | INFO |
 | :envelope: createdAt | Devuelve el *timestap* en milisegundos en la que la cuenta fue creada | INFO |
 | :envelope: lastRefreshAt | Devuelve el *timestap* en milisegundos del último refresco de información del **Usuario** | INFO |
-| :envelope: photoUrl | Devuelve la dirección de la imagen de **Usuario** | INFO |
+| :envelope: photoUrl | Devuelve la dirección de la imagen de **Usuario** |
+| errors |
+| :envelope: error | Devuelve un código de error si la petición ha sido rechazada por el Servidor. Este dato no aparece si no hay error| En todas las Acciones |
+| :envelope: menssage | Devuelve un mensaje de error si la petición ha sido rechazada por el Servidor. Ver [lista de errores comunes](#id44). Este dato no aparece si no hay error | En todas las Acciones |
+| :envelope: reason | Devuelve una cadena de error si la petición ha sido rechazada por el Servidor. Este dato no aparece si no hay error| En todas las Acciones |
 | providerUserInfo | Devuelve la lista de todos los objetos de proveedor vinculados que contienen "providerId" y "federatedId". | CHANGEPASSWORD |
-| :envelope: providerId | Devuelve el ID de proveedor vinculado (por ejemplo, "google.com" para el proveedor de Google). Sino va vinculado a ningún servidio mostrará la palabra clave *password* | INFO |
-| :love_letter: puiemail | Devuelve el eMail de **Usuario** |  |
-| :love_letter: puidisplayName | Devuelve el nombre de **Usuario** que será mostrado |  |
-| :love_letter: puiphotoUrl | Devuelve la dirección de la imagen de **Usuario** | INFO |
-| :envelope: federateId | Devuelve el identificador ID único de la cuenta IdP (proveedor de Identidad) | INFO |
+| :envelope: puIproviderId | Devuelve el ID de proveedor vinculado (por ejemplo, "google.com" para el proveedor de Google). Sino va vinculado a ningún servidio mostrará la palabra clave *password* | INFO |
+| :love_letter: puIdisplayName | Devuelve el nombre de **Usuario** que será mostrado |  |
+| :love_letter: puIphotoUrl | Devuelve la dirección de la imagen de **Usuario** | INFO |
+| :love_letter: puIfederateId | Devuelve el identificador ID único de la cuenta IdP (proveedor de Identidad) | INFO |
+| :love_letter: puIrawId | Devuelve el Identificador de Credenciales | INFO |
 
 
 Con esta información, podemos extraer los datos de la siguiente manera (ejemplo localizado en el archivo EXCEL adjunto a este repositorio):
@@ -708,17 +718,28 @@ Con esta información, podemos extraer los datos de la siguiente manera (ejemplo
 		End Sub
 
 
+<div id='id42' />
+
 ## ComprobarConexion
+
 Con esta función nos conectamos a la base de datos y requerimos un valor específico. Si está conectado o no.
 
 		Function ComprobarConexion() As Boolean
 
-En el apartado Reglas de Seguridad de este archivo se explica como se deja en Modo sólo lectura un directorio que contiene un valor que es el que revisa esta función.
+En el apartado [Reglas de Seguridad](#id5) se explica como se deja en Modo sólo lectura un directorio que contiene un valor que es el que revisa esta función.
+
+
+<div id='id43' />
 
 ## ERRORES
 Cuando enviamos información al servidor para realizar una petición, en respuesta se recibe un código, este código puede significar que la petición fue aceptada o presentó un error:
   - **200**: Petición aceptada.
   - **400**: El servidor no ha podido procesar la petición porque hay un error.
+
+
+<div id='id44' />
+
+### Lista de Errores Comunes
 
  | Error | Descripción | Acción |
  | :---: | --- | --- |
@@ -728,3 +749,5 @@ Cuando enviamos información al servidor para realizar una petición, en respues
  | **INVALID_ID_TOKEN** | Está intentando realizar una acción sin estar identificado o con un IdToken diferente al **Usuario** indicado. | Inicie sesión con sus credenciales para realizar la acción deseada. |
  | **CREDENTIAL_TOO_OLD_LOGIN_AGAIN** | Ha intentado realizar alguna acción en el servidor con una credencial caducada. | Vuelva a conextarse para actualizar el IdToken de **Usuario**. |
  | EMAIL_EXIST | Intenta crear un **Usuario** con una eMail que ya existe. | Compruebe las credenciales de los usuario existentes o pruebe con otra dirección de correo electrónico. |
+ | TOO_MANY_ATTEMPTS_TRY_LATER | Se ha superado el numero de intentos de conexión con un **Usuario** y se ha dehabilitado temporalmente la cuenta. | Póngase encontacto con el Administrador si es necesario o requiera un reseteo del Password. |
+ 
