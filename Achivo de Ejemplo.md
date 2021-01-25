@@ -21,7 +21,7 @@ En el hilo de **Ejemplo** podéis encontrar el archivo de 'ejemplo' que contine 
 <div id='id1' />
 
 # Como usar el archivo de Ejemplo
-Es archivo [**Conectar con Firebase.xlsm**](Conectar Con Firebase.xlsm) muestra en dos ventanas el funcionamiento de las Funciones contenidas en el Modulo Firebase.
+Es archivo [**Conectar con Firebase.xlsm**](https://github.com/jgarvidsson/Conectar-Excel-con-Firebase/blob/ab9879fed13a3c7f719b4607dabd2b4468ef8b76/Conectar%20Con%20Firebase.xlsm?raw=true) muestra en dos ventanas el funcionamiento de las Funciones contenidas en el Modulo Firebase.
 
 Los ejemplos mostrados permiten manejar una base de datos previamente creada por el Usuario y configurada como se explica en Readme.md.
 Por otro lado podrá crear o eliminar Usuario del registro.
