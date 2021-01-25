@@ -1,4 +1,4 @@
-En el hilo de **Ejemplo** podéis encontrar el archivo de 'ejemplo' que contine las funciones indicadas en Readme.md. Como comento, es un ejemplo de como usar las Funciones, el Usuario podrá modificar o usar estas características para programar de acuerdo a sus propósitos. 
+En el hilo de **Ejemplo** podéis encontrar el archivo de 'ejemplo' que contine las funciones indicadas en [Readme.md](README.md). Como comento, es un ejemplo de como usar las Funciones, el Usuario podrá modificar o usar estas características para programar de acuerdo a sus propósitos. 
 
 <p align="center">
 **RECUERDA QUE PARA COMPRENDER MEJOR LAS ACCIONES DE ESTE ARCHIVO, DEBES HABER LEÍDO ANTES README.MD**
