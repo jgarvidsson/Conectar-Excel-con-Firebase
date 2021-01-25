@@ -1,4 +1,24 @@
-En el hilo de **Ejemplo** podéis encontrar el archivo de 'ejemplo' que contine las funciones indicadas en Readme.md. Como comento, es un ejemplo de como usar las Funciones, el Usuario podrá modificar o usar estas características para programar de acuerdo a sus propósitos.
+En el hilo de **Ejemplo** podéis encontrar el archivo de 'ejemplo' que contine las funciones indicadas en Readme.md. Como comento, es un ejemplo de como usar las Funciones, el Usuario podrá modificar o usar estas características para programar de acuerdo a sus propósitos. 
+
+<p align="center">
+**RECUERDA QUE PARA COMPRENDER MEJOR LAS ACCIONES DE ESTE ARCHIVO, DEBES HABER LEÍDO ANTES README.MD**
+</p>
+
+## Que vamos a ver en este texto...
+
+1. [Cómo usar el archivo de Ejemplo](#id1)
+2. [Abrir el archivo](#id2)
+   - [Probar Edición de Datos en RealTime Database](#id3)
+     - [Conectar con la Base De Datos](#id4)
+     - [Enviar registros a las base de datos](#id5)
+     - [Manejar registros de la base de datos](#id6)
+   - [Probar Administración de Usuario](#id7)
+     - [Nuevos Usuarios](#id8)
+     - [Datos de Usuarios](#id9)
+     - [Acciones de Usuarios](#id10)
+
+
+<div id='id1' />
 
 # Como usar el archivo de Ejemplo
 Es archivo **Conectar con Firebase.xlsm** muestra en dos ventanas el funcionamiento de las Funciones contenidas en el Modulo Firebase.
@@ -6,7 +26,9 @@ Es archivo **Conectar con Firebase.xlsm** muestra en dos ventanas el funcionamie
 Los ejemplos mostrados permiten manejar una base de datos previamente creada por el Usuario y configurada como se explica en Readme.md.
 Por otro lado podrá crear o eliminar Usuario del registro.
 
-## Abrir el archivo
+<div id='id2' />
+
+# Abrir el archivo
 Cuando abres el archivo podrás visualizar las siguiente pantalla.
 
 <p align="center">
@@ -15,10 +37,14 @@ Cuando abres el archivo podrás visualizar las siguiente pantalla.
 
 Si la conexión con la base de datos ha sido correcta, en la parte inferior de la ventana aparecerá el mensaje 'Conexion with Server OK'. Para que esto ocurra las credenciales de la base de datos deben estar correctamente configuradas y el parámetro de conexión indicada en la base de datos. Esta información está descrita en el archivo README.MD de este repositorio.
 
-### Probar Edición de Datos en RealTime Database
-Permite conectar con la Base de Datos para aquirir el IdToken del Usuario y poder realizar varias operaciones.
+<div id='id3' />
 
-#### Conectar con la Base De Datos
+## Probar Edición de Datos en RealTime Database
+Abre el formulario (ventana) que permite conectar con la Base de Datos para aquirir el IdToken del Usuario y poder realizar varias operaciones.
+
+<div id='id4' />
+
+### Conectar con la Base De Datos
 Para conectar con la base de datos debes tener al Usuario regisrado.
 
 <p align="center">
@@ -31,7 +57,9 @@ Introducimos el correo electrónico y el password del Usuario y pulsamos 'Conect
   <img src="https://github.com/jgarvidsson/Conectar-Excel-con-Firebase/blob/img/03_PantallaConectada.png" />
 </p>
 
-#### Enviar registros a las base de datos
+<div id='id5' />
+
+### Enviar registros a las base de datos
 
 En la pestaña 'Enviar' podremos ver las tres opciones de envío que nos da Firebase.
 
@@ -45,8 +73,9 @@ En la pestaña 'Enviar' podremos ver las tres opciones de envío que nos da Fire
   
   - Con **Put** enviaremos la información a la dirección indicada. Si se reenvía la información, el contenido anterior será borrado y lo sustituirá el nuevo. Lo contrario que pasaría con ***Patch***.
 
+<div id='id6' />
 
-#### Manejar registros de la base de datos
+### Manejar registros de la base de datos
 
 En la pestaña 'Recibir/Editar/Descargar/Mover' podremos manerjar la información alamacenada en la base de datos.
 
@@ -64,9 +93,48 @@ En la pestaña 'Recibir/Editar/Descargar/Mover' podremos manerjar la informació
 Estos son sólo unos ejemplos de las opciones que pueden desarrollarse.
 
 
-### Probar Administración de Usuario
-Permite crear, borrar y modificar datos de Usuario que podrán manejar la información de la base de datos.
+<div id='id7' />
 
-#### Nuevos Usuarios
+## Probar Administración de Usuario
+Abre el formulario (ventana) que permite crear, borrar y modificar datos de Usuario que podrán manejar la información de la base de datos.
+
+
+<div id='id8' />
+
+### Nuevos Usuarios
 En la pestaña **Registro de Usuarios** podremos registrar o borrar a Usuarios.
 
+<p align="center">
+  <img src="https://github.com/jgarvidsson/Conectar-Excel-con-Firebase/blob/img/10_Usuario_Registro.png" />
+</p>
+
+Se pueden **registrar** nuevos usuarios con ***credenciales*** o ***anónimos***, pero no se podrán borrar si no tienes activo un IdToken de **Usuario**.
+
+
+<div id='id9' />
+
+### Datos de Usuarios
+En la pestaña **Datos de Usuarios** podremos ver el perfil del usuario activo o actualizar sus datos (sólo el nombre mostrado y la URL de la imagen). Para implementar otros datos hace falta una tarea específica sobre la base de datos. **Lo veremos en un proyecto posterior**.
+
+<p align="center">
+  <img src="https://github.com/jgarvidsson/Conectar-Excel-con-Firebase/blob/img/12_Usuarios_Datos.png" />
+</p>
+
+  - **Ver Perfil** permite revisar los datos almacenados en el servidor sobre el **Usuario**. No son datos personales.
+  - **Actualizar Datos** permite actualizar el nombre y/o la URL donde se encuentra almacenada la *Imagen del Usuario*.
+  - **ID Token** realiza una petición al servidor para que envíe al **Usuario** un IdToken actualizado para poder realizar varias tareas: *Borrar Usuario*, *Ver Perfil* o *Actualizar Datos*.
+
+<div id='id10' />
+
+### Acciones de Usuarios
+En la pestaña **Acciones de Usuarios** podremos resetear el Password de Usuario o modificar las credenciales.
+
+<p align="center">
+  <img src="https://github.com/jgarvidsson/Conectar-Excel-con-Firebase/blob/img/13_Usuario_Acciones.png" />
+</p>
+
+  - **Reset Password** enviará al correo indicado un acceso para resetear el Password por si ha sido olvidado.
+  - **Cambiar eMail** modifica el eMail del usuario.
+  - **Cambiar Pass** modifica el Password del usuario.
+
+Para realizar estas tareas el IdToken de Usuario tiene que estar activo.
