@@ -749,10 +749,11 @@ Cuando enviamos información al servidor para realizar una petición, en respues
  | :---: | --- | --- |
  | **EMAIL_NOT_FOUND** | El eMail introducido por el usuario no está registrado. | Comprueba la sintaxis de los datos introducidos o ponte en contacto con el **Administrador** para registrar tu **Usuario** si no tienes permisos para hacerlo. |
  | **USER_NOT_FOUND** | El Usuario introducido no está registrado. | Comprueba la sintaxis de los datos introducidos o ponte en contacto con el **Administrador** para registrar tu **Usuario** si no tienes permisos para hacerlo. |
+ | **INVALID_EMAIL** | Está intentando realizar una acción con un eMail incorrecto. | Compruebe la sintaxis del eMail introducido. |
  | **INVALID_PASSWORD** | El password correspondiente al eMail introducido no es correcto. | Compruebe la sintaxis de los datos introducidos o realice una petición de recuperación al Administrador. |
  | **MISSING_PASSWORD** | El password que está intentando cambiar está vacío. | Revise el campo que contiene el password, o está vacío o el nombre es incorrecto. |
  | **INVALID_ID_TOKEN** | Está intentando realizar una acción sin estar identificado o con un IdToken diferente al **Usuario** indicado. | Inicie sesión con sus credenciales para realizar la acción deseada. |
  | **CREDENTIAL_TOO_OLD_LOGIN_AGAIN** | Ha intentado realizar alguna acción en el servidor con una credencial caducada. | Vuelva a conextarse para actualizar el IdToken de **Usuario**. |
- | EMAIL_EXIST | Intenta crear un **Usuario** con una eMail que ya existe. | Compruebe las credenciales de los usuario existentes o pruebe con otra dirección de correo electrónico. |
- | TOO_MANY_ATTEMPTS_TRY_LATER | Se ha superado el numero de intentos de conexión con un **Usuario** y se ha dehabilitado temporalmente la cuenta. | Póngase encontacto con el Administrador  si no tienes permisos para hacerlo o requiera un reseteo del Password. |
+ | **EMAIL_EXIST**| Intenta crear un **Usuario** con una eMail que ya existe. | Compruebe las credenciales de los usuario existentes o pruebe con otra dirección de correo electrónico. |
+ | **TOO_MANY_ATTEMPTS_TRY_LATER** | Se ha superado el numero de intentos de conexión con un **Usuario** y se ha dehabilitado temporalmente la cuenta. | Póngase encontacto con el Administrador  si no tienes permisos para hacerlo o requiera un reseteo del Password. |
  
