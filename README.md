@@ -756,4 +756,5 @@ Cuando enviamos información al servidor para realizar una petición, en respues
  | **CREDENTIAL_TOO_OLD_LOGIN_AGAIN** | Ha intentado realizar alguna acción en el servidor con una credencial caducada. | Vuelva a conextarse para actualizar el IdToken de **Usuario**. |
  | **EMAIL_EXIST**| Intenta crear un **Usuario** con una eMail que ya existe. | Compruebe las credenciales de los usuario existentes o pruebe con otra dirección de correo electrónico. |
  | **TOO_MANY_ATTEMPTS_TRY_LATER** | Se ha superado el numero de intentos de conexión con un **Usuario** y se ha dehabilitado temporalmente la cuenta. | Póngase encontacto con el Administrador  si no tienes permisos para hacerlo o requiera un reseteo del Password. |
+ | **CONFIGURATION_NOT_FOUND** | Intenta extraer un IdToke de un **Usuario** sin haber iniciado el sistema de Autentificación. | Póngase encontacto con el Administrador  si no tienes permisos para hacerlo y/o inicie el sistema de Autentifiación en la consola de la base de datos, en el apartado **Authentication** |
  
