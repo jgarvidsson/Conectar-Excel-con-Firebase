@@ -200,7 +200,7 @@ Devuelve un array (matriz) con el contenido de la respuesta del servidor. Con es
 
 ### Carga Util (Payload)
 
-Hay que tener mucho cuidado a la hora de generar las cadenas con los datos en formato JSON. Es un error muy normal no acertar en la composición de una cadena completa, hay que tener especial ojo en las características que tiene (https://es.wikipedia.org/wiki/JSON), ya que estos errores provocan el rechazo por parte del servidor, por lo que puede marearnos un poco.
+Hay que tener mucho cuidado a la hora de generar las cadenas con los datos en formato JSON. Es un error muy común no acertar en la composición de una cadena completa, hay que tener especial ojo en las características que tiene (https://es.wikipedia.org/wiki/JSON), ya que estos errores provocan el rechazo por parte del servidor, por lo que puede marearnos un poco.
 
 Estructura JSON usada en este repositorio:
 
@@ -221,7 +221,7 @@ Estructura JSON usada en este repositorio:
 
 ### FirebaseDB
 
-La Función principal para trabajar con la base de datos de *Fiebase* es **FirebaseDB**. Esta función, y dependiendo del modo de trabajo requerido, permite trabajar con la base de datos en modo online realizando varias tareas especícicas.
+La Función principal para trabajar con la base de datos de *Firebase* es **FirebaseDB**. Esta función, y dependiendo del modo de trabajo requerido, permite trabajar con la base de datos en modo online realizando varias tareas especícicas.
 
     Function FirebaseDB(Mode As String, Direccion As String, Mensaje As String, _
                         Optional claveautorizacion As String = "", _
