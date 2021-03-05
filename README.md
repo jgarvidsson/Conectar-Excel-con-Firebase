@@ -176,7 +176,7 @@ A continuación, deberá decidir si el Token se requerirá automáticamente o de
           End If
       End Sub
 
-- Si es **manual** (realizando una acción, como presionar un botón), podríamos resolver la petición del *token* de la siguiente creando un botón *Conectar* y usando el código indicado a continuación (este código es parte del archivo adjunto a este repositorio):
+- Si es **manual** (realizando una acción, como presionar un botón), podríamos resolver la petición del *token* de la siguiente manera creando un botón *Conectar* y usando el código indicado a continuación (este código es parte del archivo adjunto a este repositorio):
 
       Private Sub Conectar_Click()
           If ComprobarConexion = True Then
@@ -524,7 +524,7 @@ Sólo funciona con un modo: **GET** que nos permite abrir un archivo JSON local 
 <div id='id26'  />
 
 ## DevolverValorEspecificoDeJSONLocal
-Trabaja en conjunción cno FirebasePC y permite extraer el contenido de un valor indicado.
+Trabaja en conjunción con FirebasePC y permite extraer el contenido de un valor indicado.
 
 		Function DevolverValorEspecificoDeJSONLocal(DirectorioYArchivo As String, Valor As String) As String
 
@@ -532,7 +532,7 @@ Trabaja en conjunción cno FirebasePC y permite extraer el contenido de un valor
 <div id='id27'  />
 
 ## Funciones de Registro
-Las funciones de registro son funciones que procesan ciertos datos y los envía al servidor sin esperar respuestas, suele usarme para generara 'Logs' de Uso o Registrar Errores que puedan aparecer en el programa. Estas funciones son:
+Las funciones de registro son funciones que procesan ciertos datos y los envía al servidor sin esperar respuestas, suele usarse para generar 'Logs' de Uso o Registrar Errores que puedan aparecer en el programa. Estas funciones son:
 
 <div id='id28'  />
 
